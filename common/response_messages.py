@@ -1,7 +1,4 @@
-import enum
-
-
-class ResponseMessagesEnum(enum.Enum):
+class ResponseMessagesValues:
     USER_SUCCESSFULLY_CREATED = "El usuario fue creado exitosamente."
     USER_ALREADY_EXIST = "El usuario ya existe."
     OBJECT_ALREADY_EXIST = "Ya existe un objeto con este ID."
@@ -21,3 +18,4 @@ class ResponseMessagesEnum(enum.Enum):
                                 "En caso de no poder visualizarlo en su bandeja de entrada porfavor espere unos " \
                                 "minutos o comuniquese con servicio al cliente"
     USER_VERIFIED = "El usuario fue verificado exitosamente"
+    NO_MATCHING_HATCH = "No se proporcionó el hash o el mismo no coincide con el cuerpo del mensaje"

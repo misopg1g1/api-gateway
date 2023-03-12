@@ -1,1 +1,1 @@
-from .default import DEFAULT_SETTINGS
+from .default import AppConfigValues
