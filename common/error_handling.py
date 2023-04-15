@@ -30,6 +30,10 @@ class NotReady(AppErrorBaseClass):
     pass
 
 
+class AnyCode(AppErrorBaseClass):
+    pass
+
+
 def add_custom_errors(app: FastAPI):
     @app.exception_handler(AppErrorBaseClass)
     async def handle_exception_error(request: Request, exc: AppErrorBaseClass):
@@ -54,3 +58,7 @@ def add_custom_errors(app: FastAPI):
     @app.exception_handler(Conflict)
     async def handle_409_error(request: Request, exc: Conflict):
         return JSONResponse(status_code=409, content={"error": exc.args[0]})
+
+    @app.exception_handler(AnyCode)
+    async def handle_any_error(request: Request, exc: AnyCode):
+        return JSONResponse(status_code=exc.args[1], content={"error": f"{exc.args[0]}"})

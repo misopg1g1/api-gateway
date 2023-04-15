@@ -23,14 +23,9 @@ spec:
       containers:
         - name: ${REPO_NAME}-app
           image: ${REGISTRY_HOST}/${REGISTRY_SPACE}/${REPO_NAME}-${BRANCH_NAME}:latest
-          env:
-            - name: ENCRYPTION_KEY_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: encryption
-                  key: ENCRYPTION_KEY_SECRET
-            - name: SOME_MICROSERVICE_URL
-              value: "http://micro-customer-svc.${BRANCH_NAME}"
+          envFrom:
+            - secretRef:
+                name: auth-secrets
           ports:
             - containerPort: 3000
           imagePullPolicy: Always

@@ -1,1 +1,1 @@
-from .mock_body import MockBody
+from .schemas import *
