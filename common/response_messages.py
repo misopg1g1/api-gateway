@@ -19,3 +19,5 @@ class ResponseMessagesValues:
                                 "minutos o comuniquese con servicio al cliente"
     USER_VERIFIED = "El usuario fue verificado exitosamente"
     NO_MATCHING_HATCH = "No se proporcionó el hash o el mismo no coincide con el cuerpo del mensaje"
+    GENERAL_REQUESTS_FAILURE_MESSAGE = "El servicio no se encuentra disponible por el momento. Porfavor intente mas tarde."
+
