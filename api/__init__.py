@@ -7,7 +7,7 @@ def create_app():
     app = FastAPI()
     add_custom_errors(app)
     app.include_router(api_routers.health_router)
-    app.include_router(api_routers.mock_router)
+    app.include_router(api_routers.session_router)
     handle_cors(app)
     encrypter_middleware(app)
     return app

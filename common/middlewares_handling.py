@@ -18,10 +18,11 @@ def encrypter_middleware(app: FastAPI):
         if bytes_body := receive.get("body"):
             raw_json_body = json.loads(bytes_body)
             clean_json_body = dict(filter(lambda kv: kv[0] not in ["hash"], json.loads(bytes_body).items()))
-            hash: str
-            if (hash := raw_json_body.get('hash')) == hashlib.md5(json.dumps(clean_json_body).encode()).hexdigest():
+            hash_sum: str
+            if (hash_sum := raw_json_body.get('hash')) == hashlib.md5(
+                    json.dumps(dict(sorted(clean_json_body.items(), key=lambda kv: kv[0]))).encode()).hexdigest():
                 fernet = Fernet(AppConfigValues.ENCRYPTION_KEY_SECRET.encode())
-                clean_json_body["hash"] = fernet.encrypt(hash.encode()).decode()
+                clean_json_body["hash"] = fernet.encrypt(hash_sum.encode()).decode()
             else:
                 return JSONResponse(status_code=403, content={"error": ResponseMessagesValues.NO_MATCHING_HATCH})
             new_bytes_body = json.dumps(clean_json_body).encode()

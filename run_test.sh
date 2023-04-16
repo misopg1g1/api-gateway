@@ -1,0 +1,1 @@
+PYTHONPATH=.:$PYTHONPATH pytest --cov=. --cov-report xml
