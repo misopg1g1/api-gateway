@@ -57,67 +57,67 @@ class RequestsAdapter:
             response_data = response.text
         return response_data
 
-    def _get(self, **kwargs):
-        url = self.base_url
-        if self.endpoint:
-            url = f"{self.base_url}/{self.endpoint}"
-        try:
-            response = requests.get(url, self.params, **kwargs)
-            response_data = self.extract_response_data(response)
-            self.raise_non_exception_errors(response_data, response)
-            return response.status_code, response_data
-        except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
-            raise common.error_handling.AppErrorBaseClass(
-                common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
+    # def _get(self, **kwargs):
+    #     url = self.base_url
+    #     if self.endpoint:
+    #         url = f"{self.base_url}/{self.endpoint}"
+    #     try:
+    #         response = requests.get(url, self.params, **kwargs)
+    #         response_data = self.extract_response_data(response)
+    #         self.raise_non_exception_errors(response_data, response)
+    #         return response.status_code, response_data
+    #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+    #         raise common.error_handling.AppErrorBaseClass(
+    #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
-    def _post(self, **kwargs):
-        url = self.base_url
-        if self.endpoint:
-            url = f"{self.base_url}/{self.endpoint}"
-        try:
-            response = requests.post(url, self.data, self.json, **kwargs)
-            response_data = self.extract_response_data(response)
-            self.raise_non_exception_errors(response_data, response)
-            return response.status_code, response_data
-        except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
-            raise common.error_handling.AppErrorBaseClass(
-                common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
+    # def _post(self, **kwargs):
+    #     url = self.base_url
+    #     if self.endpoint:
+    #         url = f"{self.base_url}/{self.endpoint}"
+    #     try:
+    #         response = requests.post(url, self.data, self.json, **kwargs)
+    #         response_data = self.extract_response_data(response)
+    #         self.raise_non_exception_errors(response_data, response)
+    #         return response.status_code, response_data
+    #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+    #         raise common.error_handling.AppErrorBaseClass(
+    #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
-    def _put(self, **kwargs):
-        url = self.base_url
-        if self.endpoint:
-            url = f"{self.base_url}/{self.endpoint}"
-        try:
-            response = requests.put(url, self.data, **kwargs)
-            response_data = self.extract_response_data(response)
-            self.raise_non_exception_errors(response_data, response)
-            return response.status_code, response_data
-        except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
-            raise common.error_handling.AppErrorBaseClass(
-                common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
+    # def _put(self, **kwargs):
+    #     url = self.base_url
+    #     if self.endpoint:
+    #         url = f"{self.base_url}/{self.endpoint}"
+    #     try:
+    #         response = requests.put(url, self.data, **kwargs)
+    #         response_data = self.extract_response_data(response)
+    #         self.raise_non_exception_errors(response_data, response)
+    #         return response.status_code, response_data
+    #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+    #         raise common.error_handling.AppErrorBaseClass(
+    #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
-    def _patch(self, **kwargs):
-        url = self.base_url
-        if self.endpoint:
-            url = f"{self.base_url}/{self.endpoint}"
-        try:
-            response = requests.patch(url, self.data, **kwargs)
-            response_data = self.extract_response_data(response)
-            self.raise_non_exception_errors(response_data, response)
-            return response.status_code, response_data
-        except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
-            raise common.error_handling.AppErrorBaseClass(
-                common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
+    # def _patch(self, **kwargs):
+    #     url = self.base_url
+    #     if self.endpoint:
+    #         url = f"{self.base_url}/{self.endpoint}"
+    #     try:
+    #         response = requests.patch(url, self.data, **kwargs)
+    #         response_data = self.extract_response_data(response)
+    #         self.raise_non_exception_errors(response_data, response)
+    #         return response.status_code, response_data
+    #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+    #         raise common.error_handling.AppErrorBaseClass(
+    #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
-    def _delete(self, **kwargs):
-        url = self.base_url
-        if self.endpoint:
-            url = f"{self.base_url}/{self.endpoint}"
-        try:
-            response = requests.delete(url, **kwargs)
-            response_data = self.extract_response_data(response)
-            self.raise_non_exception_errors(response_data, response)
-            return response.status_code, response_data
-        except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
-            raise common.error_handling.AppErrorBaseClass(
-                common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
+    # def _delete(self, **kwargs):
+    #     url = self.base_url
+    #     if self.endpoint:
+    #         url = f"{self.base_url}/{self.endpoint}"
+    #     try:
+    #         response = requests.delete(url, **kwargs)
+    #         response_data = self.extract_response_data(response)
+    #         self.raise_non_exception_errors(response_data, response)
+    #         return response.status_code, response_data
+    #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+    #         raise common.error_handling.AppErrorBaseClass(
+    #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
