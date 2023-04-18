@@ -11,7 +11,7 @@ class UserOperationSchema(pydantic.BaseModel):
 
 
 class LoginUserSchema(pydantic.BaseModel):
-    hash: str = pydantic.Field(example='4c43e4f140f341bd5c28d8a8cbd97e35')
+    hash: str = pydantic.Field(example='f2a125a706fea29d8bd81d9cfc6c52c4')
     user: str = pydantic.Field(example='user1')
     password: str = pydantic.Field(example='password1')
 
@@ -25,7 +25,7 @@ class CreateUserSchema(LoginUserSchema, UserOperationSchema):
 
         schema_extra = {
             "example": {
-                'hash': 'a78f864ae5a0398867ede61c6b8c5359',
+                'hash': '04ea08e045e25e0959e6907fa96bffa4',
                 'user': 'user2',
                 'password': 'password2',
                 'verify_password': 'password2',
