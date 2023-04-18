@@ -20,7 +20,8 @@ def encrypter_middleware(app: FastAPI):
             clean_json_body = dict(filter(lambda kv: kv[0] not in ["hash"], json.loads(bytes_body).items()))
             hash_sum: str
             if (hash_sum := raw_json_body.get('hash')) == hashlib.md5(
-                    json.dumps(dict(sorted(clean_json_body.items(), key=lambda kv: kv[0]))).encode()).hexdigest():
+                    json.dumps(clean_json_body, separators=(",", ":"), sort_keys=True,
+                               ensure_ascii=False).encode()).hexdigest():
                 fernet = Fernet(AppConfigValues.ENCRYPTION_KEY_SECRET.encode())
                 clean_json_body["hash"] = fernet.encrypt(hash_sum.encode()).decode()
             else:
