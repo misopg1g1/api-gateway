@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 from unittest.mock import Mock
 
 
-class TestClassFirstTest:
+class TestClassLogin:
     @pytest.fixture
     def mock_response(self, monkeypatch):
         mock_resp = Mock()
@@ -20,7 +20,7 @@ class TestClassFirstTest:
         def mock_method(*args, **kwargs):
             return mock_resp
 
-        monkeypatch.setattr(requests, 'post', mock_method)
+        monkeypatch.setattr(requests, 'request', mock_method)
         return mock_resp
 
     def test_success(self, mock_response):
@@ -42,7 +42,7 @@ class TestClassFirstTest:
             "password": "password1"
         }
         ordered_user = dict(sorted(user.items(), key=lambda kv: kv[0]))
-        raw_hash = hashlib.md5(json.dumps(ordered_user).encode()).hexdigest()
+        raw_hash = helpers.get_hash(ordered_user)
         hash_user = {
             "hash": raw_hash,
             "user": "user2",
@@ -50,3 +50,30 @@ class TestClassFirstTest:
         }
         resp = client.post("/session/login", json=hash_user)
         assert resp.status_code == 403
+
+
+class TestClassCreateUser:
+    @pytest.fixture
+    def mock_response(self, monkeypatch):
+        mock_resp = Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {'key': 'value'}
+
+        def mock_method(*args, **kwargs):
+            return mock_resp
+
+        monkeypatch.setattr(requests, 'request', mock_method)
+        return mock_resp
+
+    def test_success(self, mock_response):
+        client = TestClient(api.create_app())
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer 1"
+        }
+        user_to_add = {"user": 'user2', "password": 'password2', "role": 'SELLER', "verify_password": "password2"}
+        user_to_add["hash"] = helpers.get_hash(user_to_add)
+        resp = client.post("/session/create_user", json=user_to_add, headers=headers)
+        assert resp.status_code == 200
+        assert resp.json() == {'key': 'value'}
