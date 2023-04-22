@@ -7,6 +7,8 @@ import abc
 from requests import ConnectTimeout, ReadTimeout, Timeout, JSONDecodeError, ConnectionError
 from urllib3.exceptions import ReadTimeoutError
 
+import helpers
+
 
 class RequestsAdapter:
     base_url: str
@@ -57,12 +59,21 @@ class RequestsAdapter:
             response_data = response.text
         return response_data
 
+    @staticmethod
+    def make_request(verb, url, params=None, data=None, json_data=None, **kwargs):
+        if isinstance(data, dict):
+            helpers.refresh_object_hash(data)
+
+        if isinstance(json_data, dict):
+            helpers.refresh_object_hash(json_data)
+        return requests.request(verb, url, params=params, data=data, json=json_data, **kwargs)
+
     # def _get(self, **kwargs):
     #     url = self.base_url
     #     if self.endpoint:
     #         url = f"{self.base_url}/{self.endpoint}"
     #     try:
-    #         response = requests.get(url, self.params, **kwargs)
+    #         response = self.make_request("get", url, params=self.params, data=self.data, json_data=self.json, **kwargs)
     #         response_data = self.extract_response_data(response)
     #         self.raise_non_exception_errors(response_data, response)
     #         return response.status_code, response_data
@@ -75,7 +86,7 @@ class RequestsAdapter:
         if self.endpoint:
             url = f"{self.base_url}/{self.endpoint}"
         try:
-            response = requests.post(url, self.data, self.json, **kwargs)
+            response = self.make_request("post", url, params=self.params, data=self.data, json_data=self.json, **kwargs)
             response_data = self.extract_response_data(response)
             self.raise_non_exception_errors(response_data, response)
             return response.status_code, response_data
@@ -88,33 +99,35 @@ class RequestsAdapter:
     #     if self.endpoint:
     #         url = f"{self.base_url}/{self.endpoint}"
     #     try:
-    #         response = requests.put(url, self.data, **kwargs)
+    #         response = self.make_request("put", url, params=self.params, data=self.data, json_data=self.json, **kwargs)
     #         response_data = self.extract_response_data(response)
     #         self.raise_non_exception_errors(response_data, response)
     #         return response.status_code, response_data
     #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
     #         raise common.error_handling.AppErrorBaseClass(
     #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
-
+    #
     # def _patch(self, **kwargs):
     #     url = self.base_url
     #     if self.endpoint:
     #         url = f"{self.base_url}/{self.endpoint}"
     #     try:
-    #         response = requests.patch(url, self.data, **kwargs)
+    #         response = self.make_request("patch", url, params=self.params, data=self.data, json_data=self.json,
+    #                                      **kwargs)
     #         response_data = self.extract_response_data(response)
     #         self.raise_non_exception_errors(response_data, response)
     #         return response.status_code, response_data
     #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
     #         raise common.error_handling.AppErrorBaseClass(
     #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
-
+    #
     # def _delete(self, **kwargs):
     #     url = self.base_url
     #     if self.endpoint:
     #         url = f"{self.base_url}/{self.endpoint}"
     #     try:
-    #         response = requests.delete(url, **kwargs)
+    #         response = self.make_request("delete", url, params=self.params, data=self.data, json_data=self.json,
+    #                                      **kwargs)
     #         response_data = self.extract_response_data(response)
     #         self.raise_non_exception_errors(response_data, response)
     #         return response.status_code, response_data

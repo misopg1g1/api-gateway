@@ -6,19 +6,15 @@ from enums import RoleEnum
 import pydantic
 
 
-class UserOperationSchema(pydantic.BaseModel):
-    requester_user_password: typing.Optional[str] = pydantic.Field(...)
-
-
 class LoginUserSchema(pydantic.BaseModel):
     hash: str = pydantic.Field(example='f2a125a706fea29d8bd81d9cfc6c52c4')
     user: str = pydantic.Field(example='user1')
     password: str = pydantic.Field(example='password1')
 
 
-class CreateUserSchema(LoginUserSchema, UserOperationSchema):
+class CreateUserSchema(LoginUserSchema):
     verify_password: str = pydantic.Field(...)
-    role: RoleEnum = pydantic.Field(...)
+    role: typing.Optional[RoleEnum] = pydantic.Field(default=RoleEnum.SELLER)
 
     class Config:
         use_enum_values = True
@@ -29,8 +25,7 @@ class CreateUserSchema(LoginUserSchema, UserOperationSchema):
                 'user': 'user2',
                 'password': 'password2',
                 'verify_password': 'password2',
-                'role': 'ADMIN',
-                'requester_user_password': 'password1'
+                'role': 'ADMIN'
 
             }
         }

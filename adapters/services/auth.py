@@ -16,5 +16,10 @@ class AuthAdapter(RequestsAdapter):
         self.json = user_schema.dict()
         return self._post()
 
+    def create_user(self, new_user_schema: schemas.CreateUserSchema, headers):
+        self.endpoint = 'session/create_user'
+        self.json = new_user_schema.dict()
+        return self._post(headers=headers)
+
 
 __all__ = ['AuthAdapter']

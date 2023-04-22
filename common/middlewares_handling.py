@@ -5,7 +5,6 @@ from common import ResponseMessagesValues
 import json
 import hashlib
 
-
 from fastapi.responses import JSONResponse
 from starlette.requests import Message
 from fastapi import FastAPI, Request
@@ -19,14 +18,10 @@ def encrypter_middleware(app: FastAPI):
         send = request._send
         if bytes_body := receive.get("body"):
             raw_json_body = json.loads(bytes_body)
-            clean_json_body = dict(filter(lambda kv: kv[0] not in ["hash"], json.loads(bytes_body).items()))
             hash_sum: str
-            if (hash_sum := raw_json_body.get('hash')) == helpers.get_hash(clean_json_body):
-                fernet = Fernet(AppConfigValues.ENCRYPTION_KEY_SECRET.encode())
-                clean_json_body["hash"] = fernet.encrypt(hash_sum.encode()).decode()
-            else:
+            if not raw_json_body.get('hash') == helpers.get_hash(raw_json_body):
                 return JSONResponse(status_code=403, content={"error": ResponseMessagesValues.NO_MATCHING_HATCH})
-            new_bytes_body = json.dumps(clean_json_body).encode()
+            new_bytes_body = json.dumps(raw_json_body).encode()
             receive["body"] = new_bytes_body
 
             async def new_receive() -> Message:
