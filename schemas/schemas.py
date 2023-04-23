@@ -57,4 +57,4 @@ class LoginResponseSchema(pydantic.BaseModel):
     data: UserSchemaWithoutPassword
 
 
-__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema', 'GetProduct']
+__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema']
