@@ -1,4 +1,5 @@
 import config
+import enums
 import schemas
 from adapters.request_http import RequestsAdapter
 
@@ -20,6 +21,15 @@ class AuthAdapter(RequestsAdapter):
         self.endpoint = 'session/create_user'
         self.json = new_user_schema.dict()
         return self._post(headers=headers)
+
+    def refresh_token(self, headers):
+        self.endpoint = 'session/refresh_token'
+        return self._get(headers=headers)
+
+    def verify_role(self, role: enums.RoleEnum, headers):
+        self.endpoint = 'session/verify_role'
+        self.params = {"role": role.value}
+        return self._get(headers=headers)
 
 
 __all__ = ['AuthAdapter']

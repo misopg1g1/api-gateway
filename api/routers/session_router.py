@@ -1,3 +1,4 @@
+import enums
 import schemas
 import common
 import adapters
@@ -13,6 +14,24 @@ def create_user(new_user_schema: schemas.CreateUserSchema, request: Request, res
     adapter = adapters.AuthAdapter()
     headers = dict(request.headers.items())
     status_code, json_response = adapter.create_user(new_user_schema, headers)
+    response.status_code = status_code
+    return json_response
+
+
+@session_router.get("/refresh_token")
+def refresh_token(request: Request, response: Response, token: str = Depends(common.token_schema)):
+    adapter = adapters.AuthAdapter()
+    headers = dict(request.headers.items())
+    status_code, json_response = adapter.refresh_token(headers)
+    response.status_code = status_code
+    return json_response
+
+
+@session_router.get("/verify_role")
+def verify_role(role: enums.RoleEnum, request: Request, response: Response, token: str = Depends(common.token_schema)):
+    adapter = adapters.AuthAdapter()
+    headers = dict(request.headers.items())
+    status_code, json_response = adapter.verify_role(role, headers)
     response.status_code = status_code
     return json_response
 
