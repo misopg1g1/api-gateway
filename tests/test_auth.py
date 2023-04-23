@@ -77,3 +77,73 @@ class TestClassCreateUser:
         resp = client.post("/session/create_user", json=user_to_add, headers=headers)
         assert resp.status_code == 200
         assert resp.json() == {'key': 'value'}
+
+
+class TestClassRefreshToken:
+    @pytest.fixture
+    def mock_response(self, monkeypatch):
+        mock_resp = Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {'key': 'value'}
+
+        def mock_method(*args, **kwargs):
+            return mock_resp
+
+        monkeypatch.setattr(requests, 'request', mock_method)
+        return mock_resp
+
+    def test_success(self, mock_response):
+        client = TestClient(api.create_app())
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer 1"
+        }
+        resp = client.get("/session/refresh_token", headers=headers)
+        assert resp.status_code == 200
+        assert resp.json() == {'key': 'value'}
+
+    def test_unauthorized(self, mock_response):
+        client = TestClient(api.create_app())
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+        }
+        resp = client.get("/session/refresh_token", headers=headers)
+        assert resp.status_code == 403
+
+
+class TestClassVerifyRole:
+    @pytest.fixture
+    def mock_response(self, monkeypatch):
+        mock_resp = Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {'key': 'value'}
+
+        def mock_method(*args, **kwargs):
+            return mock_resp
+
+        monkeypatch.setattr(requests, 'request', mock_method)
+        return mock_resp
+
+    def test_success(self, mock_response):
+        client = TestClient(api.create_app())
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer 1"
+        }
+        params = {"role": "ADMIN"}
+        resp = client.get("/session/verify_role", params=params, headers=headers)
+        assert resp.status_code == 200
+        assert resp.json() == {'key': 'value'}
+
+    def test_unprocessable(self, mock_response):
+        client = TestClient(api.create_app())
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer 1"
+        }
+        resp = client.get("/session/verify_role", headers=headers)
+        assert resp.status_code == 422

@@ -68,18 +68,18 @@ class RequestsAdapter:
             helpers.refresh_object_hash(json_data)
         return requests.request(verb, url, params=params, data=data, json=json_data, **kwargs)
 
-    # def _get(self, **kwargs):
-    #     url = self.base_url
-    #     if self.endpoint:
-    #         url = f"{self.base_url}/{self.endpoint}"
-    #     try:
-    #         response = self.make_request("get", url, params=self.params, data=self.data, json_data=self.json, **kwargs)
-    #         response_data = self.extract_response_data(response)
-    #         self.raise_non_exception_errors(response_data, response)
-    #         return response.status_code, response_data
-    #     except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
-    #         raise common.error_handling.AppErrorBaseClass(
-    #             common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
+    def _get(self, **kwargs):
+        url = self.base_url
+        if self.endpoint:
+            url = f"{self.base_url}/{self.endpoint}"
+        try:
+            response = self.make_request("get", url, params=self.params, data=self.data, json_data=self.json, **kwargs)
+            response_data = self.extract_response_data(response)
+            self.raise_non_exception_errors(response_data, response)
+            return response.status_code, response_data
+        except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+            raise common.error_handling.AppErrorBaseClass(
+                common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
     def _post(self, **kwargs):
         url = self.base_url
