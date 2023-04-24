@@ -56,5 +56,15 @@ class LoginResponseSchema(pydantic.BaseModel):
     token_type: str
     data: UserSchemaWithoutPassword
 
+class CreateInventorySchema(pydantic.BaseModel):
+    productId: str 
+    stock:int
+    class Config:
+        use_enum_values = True
 
-__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema']
+class UpdateInventorySchema(pydantic.BaseModel):
+    stock:int
+    class Config:
+        use_enum_values = True
+
+__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema', 'CreateInventorySchema','UpdateInventorySchema']
