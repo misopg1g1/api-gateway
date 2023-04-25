@@ -13,8 +13,7 @@ def create_user(new_user_schema: schemas.CreateUserSchema, request: Request, res
                 token: str = Depends(common.token_schema)):
     adapter = adapters.AuthAdapter()
     headers = dict(request.headers.items())
-    status_code, json_response = adapter.create_user(new_user_schema, headers)
-    response.status_code = status_code
+    response.status_code, json_response = adapter.create_user(new_user_schema, headers)
     return json_response
 
 
@@ -22,25 +21,31 @@ def create_user(new_user_schema: schemas.CreateUserSchema, request: Request, res
 def refresh_token(request: Request, response: Response, token: str = Depends(common.token_schema)):
     adapter = adapters.AuthAdapter()
     headers = dict(request.headers.items())
-    status_code, json_response = adapter.refresh_token(headers)
-    response.status_code = status_code
+    response.status_code, json_response = adapter.refresh_token(headers)
     return json_response
 
 
-@session_router.get("/verify_role")
-def verify_role(role: enums.RoleEnum, request: Request, response: Response, token: str = Depends(common.token_schema)):
+@session_router.get("/verify_token")
+def verify_token(request: Request, response: Response, token: str = Depends(common.token_schema)):
     adapter = adapters.AuthAdapter()
     headers = dict(request.headers.items())
-    status_code, json_response = adapter.verify_role(role, headers)
-    response.status_code = status_code
+    response.status_code, json_response = adapter.verify_token(headers)
+    return json_response
+
+
+@session_router.post("/verify_roles")
+def verify_roles(roles_schema: schemas.RolesSchema, request: Request, response: Response,
+                 token: str = Depends(common.token_schema)):
+    adapter = adapters.AuthAdapter()
+    headers = dict(request.headers.items())
+    response.status_code, json_response = adapter.verify_roles(roles_schema, headers)
     return json_response
 
 
 @session_router.post("/login")
 def login(user_schema: schemas.LoginUserSchema, response: Response):
     adapter = adapters.AuthAdapter()
-    status_code, json_response = adapter.login(user_schema)
-    response.status_code = status_code
+    response.status_code, json_response = adapter.login(user_schema)
     return json_response
 
 

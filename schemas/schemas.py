@@ -1,6 +1,7 @@
 import datetime
 import typing
 
+import enums
 from enums import RoleEnum
 
 import pydantic
@@ -67,4 +68,21 @@ class UpdateInventorySchema(pydantic.BaseModel):
     class Config:
         use_enum_values = True
 
-__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema', 'CreateInventorySchema','UpdateInventorySchema']
+class RolesSchema(pydantic.BaseModel):
+    hash: typing.Optional[str]
+    roles: typing.List[enums.RoleEnum] = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {
+                'hash': '8f3c88c7f5dc8d10ba80d45f77280e8d',
+                'roles': ['ADMIN', 'SELLER']
+
+            }
+        }
+
+
+__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema', 'RolesSchema' 'CreateInventorySchema','UpdateInventorySchema']
+
