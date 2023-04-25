@@ -1,3 +1,5 @@
+import json
+
 import config
 import enums
 import schemas
@@ -26,10 +28,14 @@ class AuthAdapter(RequestsAdapter):
         self.endpoint = 'session/refresh_token'
         return self._get(headers=headers)
 
-    def verify_role(self, role: enums.RoleEnum, headers):
-        self.endpoint = 'session/verify_role'
-        self.params = {"role": role.value}
+    def verify_token(self, headers):
+        self.endpoint = 'session/verify_token'
         return self._get(headers=headers)
+
+    def verify_roles(self, roles_schema: schemas.RolesSchema, headers):
+        self.endpoint = 'session/verify_roles'
+        self.json = json.loads(roles_schema.json())
+        return self._post(headers=headers)
 
 
 __all__ = ['AuthAdapter']

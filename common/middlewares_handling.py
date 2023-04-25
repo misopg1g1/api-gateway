@@ -1,14 +1,15 @@
 import helpers
-from config import AppConfigValues
+import adapters
+import schemas
+
 from common import ResponseMessagesValues
 
 import json
-import hashlib
+import typing
 
 from fastapi.responses import JSONResponse
 from starlette.requests import Message
 from fastapi import FastAPI, Request
-from cryptography.fernet import Fernet
 
 
 def encrypter_middleware(app: FastAPI):
@@ -30,3 +31,27 @@ def encrypter_middleware(app: FastAPI):
             request = Request(request.scope, new_receive, send)
         response = await call_next(request)
         return response
+
+
+def verify_role_middleware(roles: typing.List[str]):
+    def lower_decorator(func):
+        def wrapper(*args, **kwargs):
+            request = kwargs.get("request")
+            response = kwargs.get("response")
+            headers = dict(request.headers.items())
+            auth_adapter = adapters.AuthAdapter()
+            v_status_code, v_json_resp = auth_adapter.verify_roles(
+                schemas.RolesSchema(**{"roles": roles}),
+                headers)
+            if v_status_code != 204:
+                response.status_code = v_status_code
+                return v_json_resp
+            if resp := func(*args, **kwargs):
+                return resp
+
+        return wrapper
+
+    return lower_decorator
+
+
+__all__ = ['verify_role_middleware', 'encrypter_middleware']
