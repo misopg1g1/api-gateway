@@ -38,14 +38,14 @@ class RequestsAdapter:
                 response_data: typing.Optional[typing.Dict[str, typing.Any]]
                 if self.compensation_methods:
                     self.rollback_order()
-                raise common.error_handling.AnyCode(
-                    f"{self.endpoint} | {response_data.get('error', common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)}",
-                    response.status_code)
+                message = response_data.get('error', response_data.get('msg') or response_data.get(
+                    'message') or common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
+                raise common.error_handling.AnyCode(f"{self.endpoint} | {message}", response.status_code)
             else:
                 if self.compensation_methods:
                     self.rollback_order()
                 raise common.error_handling.AnyCode(f"{self.endpoint} | {response_data}", response.status_code)
-        elif int(str(response.status_code)[0]) == 0:
+        elif int(str(response.status_code)[0]) % 5 == 0:
             if self.compensation_methods:
                 self.rollback_order()
             raise common.error_handling.AppErrorBaseClass(
