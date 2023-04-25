@@ -83,6 +83,4 @@ class RolesSchema(pydantic.BaseModel):
             }
         }
 
-
-__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema', 'RolesSchema' 'CreateInventorySchema','UpdateInventorySchema']
-
+__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema', 'RolesSchema', 'CreateInventorySchema','UpdateInventorySchema']
