@@ -57,7 +57,7 @@ class LoginResponseSchema(pydantic.BaseModel):
     data: UserSchemaWithoutPassword
 
 class CreateInventorySchema(pydantic.BaseModel):
-    productId: str 
+    product_id: str 
     stock:int
     class Config:
         use_enum_values = True
