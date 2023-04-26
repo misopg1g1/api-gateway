@@ -46,7 +46,7 @@ def verify_role_middleware(roles: typing.List[str]):
             if v_status_code != 204:
                 response.status_code = v_status_code
                 return v_json_resp
-            if resp := func(*args, **kwargs):
+            if (resp := func(*args, **kwargs)) is not None:
                 return resp
 
         return wrapper

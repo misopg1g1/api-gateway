@@ -12,9 +12,7 @@ def create_inventory(new_inventory_schema: schemas.CreateInventorySchema, reques
                 token: str = Depends(common.token_schema)):
     @common.verify_role_middleware(["ADMIN", "SELLER", "TRANSPORTER", "MARKETING", "CLIENT"])
     def method(*arg, **kwarg):
-        params = {"skip": skip, "take": take}
         inventory_adapter = adapters.InventoryAdapter()
-        inventory_adapter.params = params
         response.status_code, json_response = inventory_adapter.create_inventory(new_inventory_schema)
         return json_response
     

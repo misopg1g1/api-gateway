@@ -22,7 +22,7 @@ class InventoryAdapter(RequestsAdapter):
         return self._get()
 
     def put_inventory(self, update_inventory_schema: schemas.UpdateInventorySchema, product_id):
-        self.endpoint = f"products/{product_id}/inventoy"
+        self.endpoint = f"products/{product_id}/inventory"
         self.json = update_inventory_schema.dict()
         return self._put()
 
