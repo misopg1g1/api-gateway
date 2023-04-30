@@ -5,7 +5,7 @@ import adapters
 
 from fastapi import APIRouter, Depends, Response, Request
 
-session_router = APIRouter(prefix="/session", tags=["mock resource"])
+session_router = APIRouter(prefix="/session", tags=["Auth resource"])
 
 
 @session_router.post("/create_user")

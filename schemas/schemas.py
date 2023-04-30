@@ -21,6 +21,17 @@ CREATE_PRODUCT_EXAMPLE = {
     "categories": ["Vegetales"]
 }
 
+CREATE_CATEGORY_EXAMPLE = {
+    "name": "Verduras",
+    "description": "Alimentos verdes"
+}
+
+PATCH_CATEGORY_EXAMPLE = {
+    "name": "Verduras",
+    "description": "Alimentos verdes como el brocoli",
+    "status": False
+}
+
 
 class LoginUserSchema(pydantic.BaseModel):
     hash: str = pydantic.Field(example='f2a125a706fea29d8bd81d9cfc6c52c4')
@@ -125,5 +136,32 @@ class CreateProductSchema(pydantic.BaseModel):
             "example": {**CREATE_PRODUCT_EXAMPLE, "hash": helpers.get_hash(CREATE_PRODUCT_EXAMPLE)}
         }
 
-        __all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
-                   'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema']
+
+class CreateCategorySchema(pydantic.BaseModel):
+    name: str = pydantic.Field(...)
+    description: str = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**CREATE_CATEGORY_EXAMPLE, "hash": helpers.get_hash(CREATE_CATEGORY_EXAMPLE)}
+        }
+
+
+class PatchCategorySchema(CreateCategorySchema):
+    name: typing.Optional[str] = pydantic.Field(...)
+    description: typing.Optional[str] = pydantic.Field(...)
+    status: typing.Optional[bool] = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**PATCH_CATEGORY_EXAMPLE, "hash": helpers.get_hash(PATCH_CATEGORY_EXAMPLE)}
+        }
+
+
+__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
+           'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema',
+           'CreateCategorySchema', 'PatchCategorySchema']
