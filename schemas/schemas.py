@@ -1,10 +1,25 @@
-import datetime
-import typing
-
-import enums
-from enums import RoleEnum
+import helpers
+from enums import RoleEnum, ProductType
 
 import pydantic
+import datetime
+import typing
+import base64
+
+CREATE_PRODUCT_EXAMPLE = {
+    "name": "Lechuga",
+    "dimensions": [1, 2, 3],
+    "type": "PERISHABLE",
+    "temperature_control": 20,
+    "expiration_date": f"{datetime.datetime.now().date()}",
+    "fragility_conditions": "Es muy fragil",
+    "description": "Vegetal verde para hacer hamburguesas",
+    "status": True,
+    "price": 25000,
+    "img_base64_data": base64.b64encode(open("./public/no-image.jpg", "rb").read()).decode(),
+    "suppliers": ["Exito"],
+    "categories": ["Vegetales"]
+}
 
 
 class LoginUserSchema(pydantic.BaseModel):
@@ -57,20 +72,25 @@ class LoginResponseSchema(pydantic.BaseModel):
     token_type: str
     data: UserSchemaWithoutPassword
 
+
 class CreateInventorySchema(pydantic.BaseModel):
-    product_id: str 
-    stock:int
+    product_id: str
+    stock: int
+
     class Config:
         use_enum_values = True
 
+
 class UpdateInventorySchema(pydantic.BaseModel):
-    stock:int
+    stock: int
+
     class Config:
         use_enum_values = True
+
 
 class RolesSchema(pydantic.BaseModel):
     hash: typing.Optional[str]
-    roles: typing.List[enums.RoleEnum] = pydantic.Field(...)
+    roles: typing.List[RoleEnum] = pydantic.Field(...)
 
     class Config:
         use_enum_values = True
@@ -83,4 +103,27 @@ class RolesSchema(pydantic.BaseModel):
             }
         }
 
-__all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema', 'RolesSchema', 'CreateInventorySchema','UpdateInventorySchema']
+
+class CreateProductSchema(pydantic.BaseModel):
+    name: str = pydantic.Field(...)
+    dimensions: typing.List[int] = pydantic.Field(...)
+    type: ProductType = pydantic.Field(...)
+    temperature_control: typing.Optional[int] = pydantic.Field(...)
+    expiration_date: typing.Optional[str] = pydantic.Field(...)
+    fragility_conditions: typing.Optional[str] = pydantic.Field(...)
+    description: typing.Optional[str] = pydantic.Field(...)
+    status: typing.Optional[bool] = pydantic.Field(...)
+    price: int = pydantic.Field(...)
+    img_base64_data: typing.Optional[str] = pydantic.Field(...)
+    suppliers: typing.Optional[typing.List[str]] = pydantic.Field(...)
+    categories: typing.Optional[typing.List[str]] = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**CREATE_PRODUCT_EXAMPLE, "hash": helpers.get_hash(CREATE_PRODUCT_EXAMPLE)}
+        }
+
+        __all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
+                   'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema']
