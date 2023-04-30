@@ -26,5 +26,19 @@ class ProductsAdapter(RequestsAdapter):
         self.json = json.loads(create_product_schema.json())
         return self._post()
 
+    def get_categories(self):
+        self.endpoint = f"categories"
+        return self._get()
+
+    def create_category(self, create_category_schema: schemas.CreateCategorySchema):
+        self.endpoint = f"categories"
+        self.json = json.loads(create_category_schema.json())
+        return self._post()
+
+    def patch_category(self, category_id: str, create_category_schema: schemas.PatchCategorySchema):
+        self.endpoint = f"categories/{category_id}"
+        self.json = json.loads(create_category_schema.json())
+        return self._patch()
+
 
 __all__ = ['ProductsAdapter']
