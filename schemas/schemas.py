@@ -117,16 +117,16 @@ class RolesSchema(pydantic.BaseModel):
 
 class CreateProductSchema(pydantic.BaseModel):
     name: str = pydantic.Field(...)
-    dimensions: typing.Optional[str] = pydantic.Field(..., default="")
+    dimensions: typing.Optional[str] = pydantic.Field(default="")
     type: ProductType = pydantic.Field(...)
-    temperature_control: typing.Optional[int] = pydantic.Field(..., default="")
+    temperature_control: typing.Optional[int] = pydantic.Field(default="")
     expiration_date: typing.Optional[str] = pydantic.Field(...)
-    fragility_conditions: typing.Optional[str] = pydantic.Field(..., default="")
-    description: typing.Optional[str] = pydantic.Field(..., default="")
-    status: typing.Optional[bool] = pydantic.Field(..., default=True)
+    fragility_conditions: typing.Optional[str] = pydantic.Field(default="")
+    description: typing.Optional[str] = pydantic.Field(default="")
+    status: typing.Optional[bool] = pydantic.Field(default=True)
     price: int = pydantic.Field(...)
     img_base64_data: typing.Optional[str] = pydantic.Field(...)
-    suppliers: typing.Optional[typing.List[str]] = pydantic.Field(..., default=[])
+    suppliers: typing.Optional[typing.List[str]] = pydantic.Field(default=[])
     categories: typing.List[str] = pydantic.Field(...)
 
     class Config:
