@@ -119,14 +119,14 @@ class CreateProductSchema(pydantic.BaseModel):
     name: str = pydantic.Field(...)
     dimensions: typing.Optional[str] = pydantic.Field(default="")
     type: ProductType = pydantic.Field(...)
-    temperature_control: typing.Optional[int] = pydantic.Field(default="")
-    expiration_date: typing.Optional[str] = None
+    temperature_control: typing.Optional[int] = pydantic.Field(default=0)
+    expiration_date: typing.Optional[str] = pydantic.Field(default=datetime.datetime.fromtimestamp(0))
     fragility_conditions: typing.Optional[str] = pydantic.Field(default="")
     description: typing.Optional[str] = pydantic.Field(default="")
     status: typing.Optional[bool] = pydantic.Field(default=True)
     price: int = pydantic.Field(...)
-    img_base64_data: typing.Optional[str] = None
-    suppliers: typing.Optional[typing.List[str]] = pydantic.Field(default=[])
+    img_base64_data: typing.Optional[str] = pydantic.Field(default="")
+    suppliers: typing.Optional[typing.List[str]] = pydantic.Field(default="")
     categories: typing.Optional[typing.List[str]] = []
 
     class Config:
