@@ -127,7 +127,7 @@ class CreateProductSchema(pydantic.BaseModel):
     price: int = pydantic.Field(...)
     img_base64_data: typing.Optional[str] = None
     suppliers: typing.Optional[typing.List[str]] = pydantic.Field(default=[])
-    categories: typing.List[str] = pydantic.Field(...)
+    categories: typing.Optional[typing.List[str]] = []
 
     class Config:
         use_enum_values = True
