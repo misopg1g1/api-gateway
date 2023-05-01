@@ -1,13 +1,15 @@
-from config import AppConfigValues
-
-import json
-import hashlib
+import helpers
+import adapters
+import schemas
 
 from common import ResponseMessagesValues
+
+import json
+import typing
+
 from fastapi.responses import JSONResponse
 from starlette.requests import Message
 from fastapi import FastAPI, Request
-from cryptography.fernet import Fernet
 
 
 def encrypter_middleware(app: FastAPI):
@@ -17,15 +19,10 @@ def encrypter_middleware(app: FastAPI):
         send = request._send
         if bytes_body := receive.get("body"):
             raw_json_body = json.loads(bytes_body)
-            clean_json_body = dict(filter(lambda kv: kv[0] not in ["hash"], json.loads(bytes_body).items()))
             hash_sum: str
-            if (hash_sum := raw_json_body.get('hash')) == hashlib.md5(
-                    json.dumps(dict(sorted(clean_json_body.items(), key=lambda kv: kv[0]))).encode()).hexdigest():
-                fernet = Fernet(AppConfigValues.ENCRYPTION_KEY_SECRET.encode())
-                clean_json_body["hash"] = fernet.encrypt(hash_sum.encode()).decode()
-            else:
+            if not raw_json_body.get('hash') == helpers.get_hash(raw_json_body):
                 return JSONResponse(status_code=403, content={"error": ResponseMessagesValues.NO_MATCHING_HATCH})
-            new_bytes_body = json.dumps(clean_json_body).encode()
+            new_bytes_body = json.dumps(raw_json_body).encode()
             receive["body"] = new_bytes_body
 
             async def new_receive() -> Message:
@@ -34,3 +31,27 @@ def encrypter_middleware(app: FastAPI):
             request = Request(request.scope, new_receive, send)
         response = await call_next(request)
         return response
+
+
+def verify_role_middleware(roles: typing.List[str]):
+    def lower_decorator(func):
+        def wrapper(*args, **kwargs):
+            request = kwargs.get("request")
+            response = kwargs.get("response")
+            headers = dict(request.headers.items())
+            auth_adapter = adapters.AuthAdapter()
+            v_status_code, v_json_resp = auth_adapter.verify_roles(
+                schemas.RolesSchema(**{"roles": roles}),
+                headers)
+            if v_status_code != 204:
+                response.status_code = v_status_code
+                return v_json_resp
+            if (resp := func(*args, **kwargs)) is not None:
+                return resp
+
+        return wrapper
+
+    return lower_decorator
+
+
+__all__ = ['verify_role_middleware', 'encrypter_middleware']

@@ -8,6 +8,9 @@ def create_app():
     add_custom_errors(app)
     app.include_router(api_routers.health_router)
     app.include_router(api_routers.session_router)
+    app.include_router(api_routers.product_router)
+    app.include_router(api_routers.inventory_router)
+    app.include_router(api_routers.category_router)
     handle_cors(app)
     encrypter_middleware(app)
     return app
