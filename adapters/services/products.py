@@ -11,7 +11,7 @@ class ProductsAdapter(RequestsAdapter):
 
     def rollback_order(self):
         for comp in self.compensation_methods:
-            globals()[f"{comp[0]}"](*comp[1::])
+            self.__getattribute__(comp[0])(*comp[1::])
 
     def get_products(self):
         self.endpoint = "products"
@@ -39,6 +39,5 @@ class ProductsAdapter(RequestsAdapter):
         self.endpoint = f"categories/{category_id}"
         self.json = json.loads(create_category_schema.json())
         return self._patch()
-
 
 __all__ = ['ProductsAdapter']

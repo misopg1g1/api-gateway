@@ -5,6 +5,7 @@ from common import add_custom_errors, handle_cors, encrypter_middleware
 
 def create_app():
     app = FastAPI()
+    app.max_request_size = 200 * 1024 * 1024
     add_custom_errors(app)
     app.include_router(api_routers.health_router)
     app.include_router(api_routers.session_router)

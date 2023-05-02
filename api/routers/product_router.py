@@ -44,7 +44,15 @@ def create_product(product_schema: schemas.CreateProductSchema, request: Request
     @common.verify_role_middleware(["ADMIN", "MARKETING"])
     def method(*args, **kwargs):
         products_adapter = adapters.ProductsAdapter()
+        inventory_adapter = adapters.InventoryAdapter()
         response.status_code, json_response = products_adapter.create_product(product_schema)
+        new_inventory_schema: typing.Optional[schemas.CreateInventorySchema] = None
+        if json_response and (product_id := json_response.get("id", None)):
+            new_inventory_schema = schemas.CreateInventorySchema(**{"product_id": product_id, "stock": 0})
+        else:
+            return json_response
+        inventory_adapter.compensation_methods.append(("delete_product", product_id))
+        inventory_adapter.create_inventory(new_inventory_schema)
         return json_response
 
     return method(request=request, response=response)
