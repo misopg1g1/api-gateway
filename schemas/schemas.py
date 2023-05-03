@@ -120,7 +120,7 @@ class CreateProductSchema(pydantic.BaseModel):
     dimensions: typing.Optional[str] = pydantic.Field(default="")
     type: ProductType = pydantic.Field(...)
     temperature_control: typing.Optional[int] = pydantic.Field(default=0)
-    expiration_date: typing.Optional[str] = pydantic.Field(default=datetime.datetime.fromtimestamp(0))
+    expiration_date: typing.Optional[str] = pydantic.Field(default=str(datetime.datetime.fromtimestamp(0)))
     fragility_conditions: typing.Optional[str] = pydantic.Field(default="")
     description: typing.Optional[str] = pydantic.Field(default="")
     status: typing.Optional[bool] = pydantic.Field(default=True)

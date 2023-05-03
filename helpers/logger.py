@@ -1,3 +1,3 @@
 import logging
 
-global_logger = logging.getLogger('HeroesAuthComponent')
+global_logger = logging.getLogger('ApiGateway')
