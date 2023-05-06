@@ -15,20 +15,24 @@ from fastapi import FastAPI, Request
 def encrypter_middleware(app: FastAPI):
     @app.middleware("http")
     async def encrypt_body(request: Request, call_next):
-        receive = await request._receive()
-        send = request._send
-        if bytes_body := receive.get("body"):
-            raw_json_body = json.loads(bytes_body)
-            hash_sum: str
-            if not raw_json_body.get('hash') == helpers.get_hash(raw_json_body):
+        # Receive the entire request body using request.stream()
+        body = b""
+        async for chunk in request.stream():
+            body += chunk
+
+        if body:
+            # Check the hash and add it to the request headers
+            raw_json_body = json.loads(body)
+            hash_sum = helpers.get_hash(raw_json_body)
+            if not raw_json_body.get('hash') == hash_sum:
                 return JSONResponse(status_code=403, content={"error": ResponseMessagesValues.NO_MATCHING_HATCH})
-            new_bytes_body = json.dumps(raw_json_body).encode()
-            receive["body"] = new_bytes_body
 
-            async def new_receive() -> Message:
-                return receive
+        async def new_receive() -> Message:
+            return {"type": "http.request", "body": body}
 
-            request = Request(request.scope, new_receive, send)
+        request = Request(request.scope, new_receive, request._send)
+
+        # Call the next middleware or the endpoint with the updated request
         response = await call_next(request)
         return response
 

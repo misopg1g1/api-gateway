@@ -12,7 +12,7 @@ class AuthAdapter(RequestsAdapter):
 
     def rollback_order(self):
         for comp in self.compensation_methods:
-            globals()[f"{comp[0]}"](*comp[1::])
+            self.__getattribute__(comp[0])(*comp[1::])
 
     def login(self, user_schema: schemas.LoginUserSchema):
         self.endpoint = 'session/login'

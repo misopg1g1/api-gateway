@@ -1,24 +1,32 @@
 import helpers
-from enums import RoleEnum, ProductType
+from enums import RoleEnum, ProductType, ZoneEnum, IdentificationTypeEnum
 
 import pydantic
 import datetime
 import typing
 import base64
 
-CREATE_PRODUCT_EXAMPLE = {
-    "name": "Lechuga",
-    "dimensions": [1, 2, 3],
-    "type": "PERISHABLE",
-    "temperature_control": 20,
-    "expiration_date": f"{datetime.datetime.now().date()}",
-    "fragility_conditions": "Es muy fragil",
-    "description": "Vegetal verde para hacer hamburguesas",
-    "status": True,
-    "price": 25000,
-    "img_base64_data": base64.b64encode(open("./public/no-image.jpg", "rb").read()).decode(),
-    "suppliers": ["Exito"],
-    "categories": ["Vegetales"]
+CREATE_PRODUCT_EXAMPLE = {"name": "asdf", "description": "asdf", "type": "PERISHABLE", "categories": ["Verduras"],
+                          "price": 1232131}
+
+CREATE_CUSTOMER_EXAMPLE = {
+    "registered_name": "Acme",
+    "first_name": "John",
+    "last_name": "Doe",
+    "identification": {
+        "number": "123456789",
+        "type": "DNI"
+    },
+    "seller_id": "seller 3",
+    "address": {
+        "country": "Honduras",
+        "city": "Choloma",
+        "zone": "ZONA CENTRO",
+        "address": "Calle ciega, 55",
+        "postal_code": "111111"
+    },
+    "phone": "123456789",
+    "email": "john.doe@acme.com"
 }
 
 CREATE_CATEGORY_EXAMPLE = {
@@ -120,7 +128,7 @@ class CreateProductSchema(pydantic.BaseModel):
     dimensions: typing.Optional[str] = pydantic.Field(default="")
     type: ProductType = pydantic.Field(...)
     temperature_control: typing.Optional[int] = pydantic.Field(default=0)
-    expiration_date: typing.Optional[str] = pydantic.Field(default=datetime.datetime.fromtimestamp(0))
+    expiration_date: typing.Optional[str] = pydantic.Field(default=str(datetime.datetime.fromtimestamp(0)))
     fragility_conditions: typing.Optional[str] = pydantic.Field(default="")
     description: typing.Optional[str] = pydantic.Field(default="")
     status: typing.Optional[bool] = pydantic.Field(default=True)
@@ -162,6 +170,45 @@ class PatchCategorySchema(CreateCategorySchema):
         }
 
 
+class CreateAddressSchema(pydantic.BaseModel):
+    address: str = pydantic.Field(...)
+    city: str = pydantic.Field(...)
+    country: str = pydantic.Field(...)
+    zone: ZoneEnum = pydantic.Field(...)
+    postal_code: typing.Optional[str] = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+
+class CreateIdentificationSchema(pydantic.BaseModel):
+    number: str = pydantic.Field(...)
+    type: IdentificationTypeEnum = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+
+class CreateCustomerSchema(pydantic.BaseModel):
+    registered_name: str = pydantic.Field(...)
+    first_name: str = pydantic.Field(...)
+    last_name: str = pydantic.Field(...)
+    financial_alert: typing.Optional[bool]
+    seller_id: str = pydantic.Field(...)
+    phone: str = pydantic.Field(...)
+    email: str = pydantic.Field(...)
+    address: CreateAddressSchema = pydantic.Field(...)
+    identification: CreateIdentificationSchema = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**CREATE_CUSTOMER_EXAMPLE, "hash": helpers.get_hash(CREATE_CUSTOMER_EXAMPLE)}
+        }
+
+
 __all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
            'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema',
-           'CreateCategorySchema', 'PatchCategorySchema']
+           'CreateCategorySchema', 'PatchCategorySchema', 'CreateCustomerSchema', 'CREATE_PRODUCT_EXAMPLE',
+           'CREATE_CATEGORY_EXAMPLE', 'PATCH_CATEGORY_EXAMPLE']
