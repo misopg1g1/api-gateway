@@ -6,20 +6,8 @@ import datetime
 import typing
 import base64
 
-CREATE_PRODUCT_EXAMPLE = {
-    "name": "Lechuga",
-    "dimensions": [1, 2, 3],
-    "type": "PERISHABLE",
-    "temperature_control": 20,
-    "expiration_date": f"{datetime.datetime.now().date()}",
-    "fragility_conditions": "Es muy fragil",
-    "description": "Vegetal verde para hacer hamburguesas",
-    "status": True,
-    "price": 25000,
-    "img_base64_data": base64.b64encode(open("./public/no-image.jpg", "rb").read()).decode(),
-    "suppliers": ["Exito"],
-    "categories": ["Vegetales"]
-}
+CREATE_PRODUCT_EXAMPLE = {"name": "asdf", "description": "asdf", "type": "PERISHABLE", "categories": ["Verduras"],
+                          "price": 1232131}
 
 CREATE_CUSTOMER_EXAMPLE = {
     "registered_name": "Acme",
@@ -222,4 +210,5 @@ class CreateCustomerSchema(pydantic.BaseModel):
 
 __all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
            'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema',
-           'CreateCategorySchema', 'PatchCategorySchema', 'CreateCustomerSchema']
+           'CreateCategorySchema', 'PatchCategorySchema', 'CreateCustomerSchema', 'CREATE_PRODUCT_EXAMPLE',
+           'CREATE_CATEGORY_EXAMPLE', 'PATCH_CATEGORY_EXAMPLE']
