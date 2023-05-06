@@ -4,3 +4,4 @@ from .product_router import product_router
 from .inventory_router import inventory_router
 from .category_router import category_router
 from .countries_router import countries_router
+from .customer_router import customer_router
