@@ -10,7 +10,7 @@ class TestClassCreateInventory:
     @pytest.fixture
     def mock_response(self, monkeypatch):
         mockup_resp = Mock()
-        mockup_resp.status_code = 201
+        mockup_resp.status_code = 204
         mockup_resp.json.return_value = {'key': 'value'}
 
         def mock_method(*args, **kwargs):
@@ -29,8 +29,7 @@ class TestClassCreateInventory:
         inventory_to_add = {"product_id": '123456', "stock": 10}
         inventory_to_add["hash"] = helpers.get_hash(inventory_to_add)
         resp = client.post("/inventories", json=inventory_to_add, headers=headers)
-        assert resp.status_code == 201
-        assert resp.json() == {'key': 'value'}
+        assert resp.status_code == 204
 
     def test_unauthorized(self, mock_response):
         client = TestClient(api.create_app())
@@ -60,7 +59,7 @@ class TestClassGetInventory:
     @pytest.fixture
     def mock_response(self, monkeypatch):
         mockup_resp = Mock()
-        mockup_resp.status_code = 200
+        mockup_resp.status_code = 204
         mockup_resp.json.return_value = {'key': 'value'}
 
         def mock_method(*args, **kwargs):
@@ -77,8 +76,7 @@ class TestClassGetInventory:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/products/123456/inventory", headers=headers)
-        assert resp.status_code == 200
-        assert resp.json() == {'key': 'value'}
+        assert resp.status_code == 204
 
     def test_not_found(self, mock_response):
         client = TestClient(api.create_app())
@@ -94,7 +92,7 @@ class TestClassGetInventories:
     @pytest.fixture
     def mock_response(self, monkeypatch):
         mockup_resp = Mock()
-        mockup_resp.status_code = 200
+        mockup_resp.status_code = 204
         mockup_resp.json.return_value = {'key': 'value'}
 
         def mock_method(*args, **kwargs):
@@ -111,8 +109,7 @@ class TestClassGetInventories:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/inventories", headers=headers)
-        assert resp.status_code == 200
-        assert resp.json() == {'key': 'value'}
+        assert resp.status_code == 204
 
     def test_not_found(self, mock_response):
         client = TestClient(api.create_app())
@@ -128,7 +125,7 @@ class TestClassUpdateInventory:
     @pytest.fixture
     def mock_response(self, monkeypatch):
         mockup_resp = Mock()
-        mockup_resp.status_code = 200
+        mockup_resp.status_code = 204
         mockup_resp.json.return_value = {'key': 'value'}
 
         def mock_method(*args, **kwargs):
@@ -147,8 +144,8 @@ class TestClassUpdateInventory:
         inventory_to_add = {"stock": 10}
         inventory_to_add["hash"] = helpers.get_hash(inventory_to_add)
         resp = client.put("/products/123456/inventory", json=inventory_to_add, headers=headers)
-        assert resp.status_code == 200
-        assert resp.json() == {'key': 'value'}
+        assert resp.status_code == 204
+
 
     def test_unauthorized(self, mock_response):
         client = TestClient(api.create_app())

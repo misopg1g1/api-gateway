@@ -38,7 +38,7 @@ def create_category(category_schema: schemas.CreateCategorySchema, request: Requ
     return method(request=request, response=response)
 
 
-@category_router.patch("{category_id}")
+@category_router.patch("/{category_id}")
 def patch_category(category_id: str, category_schema: schemas.PatchCategorySchema, request: Request,
                    response: Response, token: str = Depends(common.token_schema)):
     @common.verify_role_middleware(["ADMIN", "MARKETING"])
