@@ -76,7 +76,7 @@ class TestClassCreateUser:
         user_to_add["hash"] = helpers.get_hash(user_to_add)
         resp = client.post("/session/create_user", json=user_to_add, headers=headers)
         assert resp.status_code == 200
-        assert resp.json() == {'key': 'value'}
+        assert resp.json() == {"msg":"El usuario user2 fue creado exitosamente."}
 
 
 class TestClassRefreshToken:
