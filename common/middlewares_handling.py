@@ -58,4 +58,26 @@ def verify_role_middleware(roles: typing.List[str]):
     return lower_decorator
 
 
-__all__ = ['verify_role_middleware', 'encrypter_middleware']
+def verify_identity(target_user_id: typing.Optional[str] = None):
+    def lower_decorator(func):
+        def wrapper(*args, **kwargs):
+            request = kwargs.get("request")
+            response = kwargs.get("response")
+            headers = dict(request.headers.items())
+            auth_adapter = adapters.AuthAdapter()
+            v_status_code, v_json_resp = auth_adapter.verify_token(headers)
+            if v_status_code != 200:
+                response.status_code = v_status_code
+                return v_json_resp
+            if target_user_id:
+                if not (requester_id := v_json_resp.get("id")) or requester_id != target_user_id:
+                    return JSONResponse(status_code=401, content={"error": ResponseMessagesValues.NOT_ALLOWED})
+            if (resp := func(*args, **kwargs)) is not None:
+                return resp
+
+        return wrapper
+
+    return lower_decorator
+
+
+__all__ = ['verify_role_middleware', 'encrypter_middleware', 'verify_identity']

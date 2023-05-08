@@ -63,6 +63,7 @@ UPDATE_VISIT_EXAMPLE = {
     "order_id": "2b93fb04-ed28-11ed-a05b-0242ac120003"
 }
 
+
 class LoginUserSchema(pydantic.BaseModel):
     hash: str = pydantic.Field(example='f2a125a706fea29d8bd81d9cfc6c52c4')
     user: str = pydantic.Field(example='user1')
@@ -229,6 +230,7 @@ class CreateCustomerSchema(pydantic.BaseModel):
             "example": {**CREATE_CUSTOMER_EXAMPLE, "hash": helpers.get_hash(CREATE_CUSTOMER_EXAMPLE)}
         }
 
+
 class CreateSellerSchema(pydantic.BaseModel):
     id: str = pydantic.Field(...)
 
@@ -238,6 +240,7 @@ class CreateSellerSchema(pydantic.BaseModel):
         schema_extra = {
             "example": {**CREATE_SELLER_EXAMPLE, "hash": helpers.get_hash(CREATE_SELLER_EXAMPLE)}
         }
+
 
 class UpdateSellerSchema(pydantic.BaseModel):
     first_name: str = pydantic.Field(...)
@@ -252,10 +255,11 @@ class UpdateSellerSchema(pydantic.BaseModel):
             "example": {**UPDATE_SELLER_EXAMPLE, "hash": helpers.get_hash(UPDATE_SELLER_EXAMPLE)}
         }
 
+
 class CreateVisitSchema(pydantic.BaseModel):
-    img_base64_data: typing.Optional[str] = pydantic.Field(default="")
-    visit_date: typing.Optional[str] = pydantic.Field(default=str(datetime.datetime.fromtimestamp(0)))
-    description: typing.Optional[str] = pydantic.Field(default="")
+    img_base64_data: typing.Optional[str] = pydantic.Field(default_factory=lambda: "")
+    visit_date: typing.Optional[str] = pydantic.Field(default_factory=lambda: str(datetime.datetime.fromtimestamp(0)))
+    description: typing.Optional[str] = pydantic.Field(default_factory=lambda: "")
     order_id: str = pydantic.Field(...)
 
     class Config:
@@ -264,6 +268,7 @@ class CreateVisitSchema(pydantic.BaseModel):
         schema_extra = {
             "example": {**CREATE_VISIT_EXAMPLE, "hash": helpers.get_hash(CREATE_VISIT_EXAMPLE)}
         }
+
 
 class UpdateVisitSchema(pydantic.BaseModel):
     img_base64_data: typing.Optional[str] = pydantic.Field(default="")
@@ -278,9 +283,10 @@ class UpdateVisitSchema(pydantic.BaseModel):
             "example": {**UPDATE_VISIT_EXAMPLE, "hash": helpers.get_hash(UPDATE_VISIT_EXAMPLE)}
         }
 
+
 __all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
            'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema',
            'CreateCategorySchema', 'PatchCategorySchema', 'CreateCustomerSchema', 'CREATE_PRODUCT_EXAMPLE',
-           'CREATE_CATEGORY_EXAMPLE', 'PATCH_CATEGORY_EXAMPLE','CreateSellerSchema','CREATE_SELLER_EXAMPLE',
-           'CreateVisitSchema','CREATE_VISIT_EXAMPLE','UpdateVisitSchema','UPDATE_VISIT_EXAMPLE',
-           'UpdateSellerSchema','UPDATE_SELLER_EXAMPLE']
+           'CREATE_CATEGORY_EXAMPLE', 'PATCH_CATEGORY_EXAMPLE', 'CreateSellerSchema', 'CREATE_SELLER_EXAMPLE',
+           'CreateVisitSchema', 'CREATE_VISIT_EXAMPLE', 'UpdateVisitSchema', 'UPDATE_VISIT_EXAMPLE',
+           'UpdateSellerSchema', 'UPDATE_SELLER_EXAMPLE']
