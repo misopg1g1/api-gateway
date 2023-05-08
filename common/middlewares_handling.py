@@ -1,3 +1,6 @@
+import copy
+
+import config
 import helpers
 import adapters
 import schemas
@@ -6,6 +9,8 @@ from common import ResponseMessagesValues
 
 import json
 import typing
+import re
+import requests
 
 from fastapi.responses import JSONResponse
 from starlette.requests import Message
@@ -70,9 +75,41 @@ def verify_identity(target_user_id: typing.Optional[str] = None):
                 response.status_code = v_status_code
                 return v_json_resp
             if target_user_id:
-                if not (requester_id := v_json_resp.get("id")) or requester_id != target_user_id:
+                if v_json_resp.get("role") != "ADMIN" and (not (requester_id := v_json_resp.get("id")) or
+                                                           requester_id != target_user_id):
                     return JSONResponse(status_code=401, content={"error": ResponseMessagesValues.NOT_ALLOWED})
+            if v_json_resp.get("role") == "SELLER" and not target_user_id and \
+                    re.fullmatch(r'/visits/[\dA-Za-z\-]+', request.url.path) and request.method in ["PUT", "DELETE"]:
+                get_response = requests.request("GET", str(request.url).replace("http://localhost:3000",
+                                                                                config.AppConfigValues.SELLERS_URL),
+                                                params={"relations": True})
+                if get_response.status_code != 200:
+                    try:
+                        return JSONResponse(status_code=get_response.status_code,
+                                            content=get_response.json())
+                    except:
+                        JSONResponse(status_code=500,
+                                     content={"error": ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE})
+                else:
+                    try:
+                        if get_response.json().get("seller", {}).get("id") != v_json_resp.get("id"):
+                            return JSONResponse(status_code=401, content={"error": ResponseMessagesValues.NOT_ALLOWED})
+                    except:
+                        JSONResponse(status_code=500,
+                                     content={"error": ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE})
             if (resp := func(*args, **kwargs)) is not None:
+                if v_json_resp.get("role") == "SELLER" and not target_user_id and \
+                        re.fullmatch(r'(/visits|/visits/[\dA-Za-z\-]+)', request.url.path) and request.method == "GET":
+                    if isinstance(resp, typing.List):
+                        return list(
+                            filter(lambda obj: not obj.get("seller") or obj.get("seller",
+                                                                                {}).get("id") == v_json_resp.get("id"),
+                                   resp))
+                    if isinstance(resp, dict) and not (
+                            not resp.get("seller") or resp.get("seller", {}).get("id") == v_json_resp.get("id")):
+                        return JSONResponse(status_code=401, content={"error": ResponseMessagesValues.NOT_ALLOWED})
+                    return resp
+
                 return resp
 
         return wrapper
