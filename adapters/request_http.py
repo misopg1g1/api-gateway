@@ -78,6 +78,8 @@ class RequestsAdapter:
             self.raise_non_exception_errors(response_data, response)
             return response.status_code, response_data
         except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+            if self.compensation_methods:
+                self.rollback_order()
             raise common.error_handling.AppErrorBaseClass(
                 common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
@@ -91,6 +93,8 @@ class RequestsAdapter:
             self.raise_non_exception_errors(response_data, response)
             return response.status_code, response_data
         except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+            if self.compensation_methods:
+                self.rollback_order()
             raise common.error_handling.AppErrorBaseClass(
                 common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
@@ -104,6 +108,8 @@ class RequestsAdapter:
             self.raise_non_exception_errors(response_data, response)
             return response.status_code, response_data
         except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+            if self.compensation_methods:
+                self.rollback_order()
             raise common.error_handling.AppErrorBaseClass(
                 common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
@@ -118,6 +124,8 @@ class RequestsAdapter:
             self.raise_non_exception_errors(response_data, response)
             return response.status_code, response_data
         except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+            if self.compensation_methods:
+                self.rollback_order()
             raise common.error_handling.AppErrorBaseClass(
                 common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
 
@@ -132,5 +140,7 @@ class RequestsAdapter:
             self.raise_non_exception_errors(response_data, response)
             return response.status_code, response_data
         except (ConnectTimeout, ConnectionError, ReadTimeoutError, ReadTimeout, Timeout):
+            if self.compensation_methods:
+                self.rollback_order()
             raise common.error_handling.AppErrorBaseClass(
                 common.ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE)
