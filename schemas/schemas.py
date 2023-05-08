@@ -40,6 +40,29 @@ PATCH_CATEGORY_EXAMPLE = {
     "status": False
 }
 
+CREATE_SELLER_EXAMPLE = {
+    "id": "a80ed738-ed20-11ed-a05b-0242ac120003"
+}
+
+UPDATE_SELLER_EXAMPLE = {
+    "first_name": "Juan",
+    "last_name": "Pérez",
+    "sales_commission": 10,
+    "status": False
+}
+
+CREATE_VISIT_EXAMPLE = {
+    "visit_date": "2023-06-07",
+    "description": "Ejemplo de visita",
+    "order_id": "2b93fb04-ed28-11ed-a05b-0242ac120003"
+}
+
+UPDATE_VISIT_EXAMPLE = {
+    "visit_date": "2023-06-07",
+    "description": "Cambio descripcion",
+    "order_id": "2b93fb04-ed28-11ed-a05b-0242ac120003"
+}
+
 
 class LoginUserSchema(pydantic.BaseModel):
     hash: str = pydantic.Field(example='f2a125a706fea29d8bd81d9cfc6c52c4')
@@ -208,7 +231,62 @@ class CreateCustomerSchema(pydantic.BaseModel):
         }
 
 
+class CreateSellerSchema(pydantic.BaseModel):
+    id: str = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**CREATE_SELLER_EXAMPLE, "hash": helpers.get_hash(CREATE_SELLER_EXAMPLE)}
+        }
+
+
+class UpdateSellerSchema(pydantic.BaseModel):
+    first_name: str = pydantic.Field(...)
+    last_name: str = pydantic.Field(...)
+    sales_commission: int = pydantic.Field(...)
+    status: typing.Optional[bool] = pydantic.Field()
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**UPDATE_SELLER_EXAMPLE, "hash": helpers.get_hash(UPDATE_SELLER_EXAMPLE)}
+        }
+
+
+class CreateVisitSchema(pydantic.BaseModel):
+    img_base64_data: typing.Optional[str] = pydantic.Field(default_factory=lambda: "")
+    visit_date: typing.Optional[str] = pydantic.Field(default_factory=lambda: str(datetime.datetime.fromtimestamp(0)))
+    description: typing.Optional[str] = pydantic.Field(default_factory=lambda: "")
+    order_id: str = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**CREATE_VISIT_EXAMPLE, "hash": helpers.get_hash(CREATE_VISIT_EXAMPLE)}
+        }
+
+
+class UpdateVisitSchema(pydantic.BaseModel):
+    img_base64_data: typing.Optional[str] = pydantic.Field(default="")
+    visit_date: typing.Optional[str] = pydantic.Field(default=str(datetime.datetime.fromtimestamp(0)))
+    description: typing.Optional[str] = pydantic.Field(default="")
+    order_id: str = pydantic.Field(...)
+
+    class Config:
+        use_enum_values = True
+
+        schema_extra = {
+            "example": {**UPDATE_VISIT_EXAMPLE, "hash": helpers.get_hash(UPDATE_VISIT_EXAMPLE)}
+        }
+
+
 __all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
            'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema',
            'CreateCategorySchema', 'PatchCategorySchema', 'CreateCustomerSchema', 'CREATE_PRODUCT_EXAMPLE',
-           'CREATE_CATEGORY_EXAMPLE', 'PATCH_CATEGORY_EXAMPLE']
+           'CREATE_CATEGORY_EXAMPLE', 'PATCH_CATEGORY_EXAMPLE', 'CreateSellerSchema', 'CREATE_SELLER_EXAMPLE',
+           'CreateVisitSchema', 'CREATE_VISIT_EXAMPLE', 'UpdateVisitSchema', 'UPDATE_VISIT_EXAMPLE',
+           'UpdateSellerSchema', 'UPDATE_SELLER_EXAMPLE']

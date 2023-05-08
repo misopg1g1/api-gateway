@@ -16,7 +16,7 @@ class RequestsAdapter:
     params: typing.Any
     data: typing.Any
     json: typing.Any
-    compensation_methods: typing.List[typing.Tuple[str, typing.Any]]
+    compensation_methods: typing.List[typing.Tuple]
 
     def __init__(self, base_url: str, endpoint: typing.Optional[str] = None, params=None, data=None, json=None,
                  compensation_methods=None):
