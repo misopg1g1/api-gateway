@@ -14,6 +14,7 @@ def create_app():
     app.include_router(api_routers.category_router)
     app.include_router(api_routers.countries_router)
     app.include_router(api_routers.customer_router)
+    app.include_router(api_routers.seller_router)
     handle_cors(app)
     encrypter_middleware(app)
     return app
