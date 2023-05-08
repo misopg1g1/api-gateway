@@ -103,7 +103,6 @@ def get_visits_from_seller(seller_id: typing.Union[str, int], request: Request, 
     return method(request=request, response=response)
 
 
-# Todo limitar
 @seller_router.get("/visits")
 def get_visits(request: Request, response: Response, skip: typing.Optional[int] = None,
                take: typing.Optional[int] = None,
@@ -134,7 +133,6 @@ def create_visit(new_visit_schema: schemas.CreateVisitSchema, request: Request, 
     return method(request=request, response=response)
 
 
-# Todo Limitar
 @seller_router.get("/visits/{visit_id}")
 def get_visit(visit_id: typing.Union[str, int], request: Request, response: Response,
               token: str = Depends(common.token_schema)):
