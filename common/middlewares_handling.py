@@ -63,7 +63,7 @@ def verify_role_middleware(roles: typing.List[str]):
     return lower_decorator
 
 
-def verify_identity(target_user_id: typing.Optional[str] = None):
+def verify_identity_for_seller_resources(target_user_id: typing.Optional[str] = None):
     def lower_decorator(func):
         def wrapper(*args, **kwargs):
             request = kwargs.get("request")
@@ -75,13 +75,13 @@ def verify_identity(target_user_id: typing.Optional[str] = None):
                 response.status_code = v_status_code
                 return v_json_resp
             if target_user_id:
-                if v_json_resp.get("role") != "ADMIN" and (not (requester_id := v_json_resp.get("id")) or
-                                                           requester_id != target_user_id):
+                if v_json_resp.get("role") not in ["ADMIN", "MARKETING"] and \
+                        (not (requester_id := v_json_resp.get("id")) or requester_id != target_user_id):
                     return JSONResponse(status_code=401, content={"error": ResponseMessagesValues.NOT_ALLOWED})
             if v_json_resp.get("role") == "SELLER" and not target_user_id and \
                     re.fullmatch(r'/visits/[\dA-Za-z\-]+', request.url.path) and request.method in ["PUT", "DELETE"]:
-                get_response = requests.request("GET", str(request.url).replace("http://localhost:3000",
-                                                                                config.AppConfigValues.SELLERS_URL),
+                get_response = requests.request("GET", '/'.join([config.AppConfigValues.SELLERS_URL,
+                                                                 *str(request.url).split("/")[3::]]),
                                                 params={"relations": True})
                 if get_response.status_code != 200:
                     try:
@@ -97,6 +97,15 @@ def verify_identity(target_user_id: typing.Optional[str] = None):
                     except:
                         JSONResponse(status_code=500,
                                      content={"error": ResponseMessagesValues.GENERAL_REQUESTS_FAILURE_MESSAGE})
+
+            if v_json_resp.get("role") != "SELLER" and not target_user_id and \
+                    re.fullmatch(r'/visits', request.url.path) and request.method in ["POST"]:
+                return JSONResponse(status_code=401, content={"error": ResponseMessagesValues.ONLY_SELLERS_MSG})
+
+            if v_json_resp.get("role") == "SELLER" and not target_user_id and \
+                    re.fullmatch(r'/visits', request.url.path) and request.method in ["POST"]:
+                kwargs["seller_id"] = v_json_resp.get("id")
+
             if (resp := func(*args, **kwargs)) is not None:
                 if v_json_resp.get("role") == "SELLER" and not target_user_id and \
                         re.fullmatch(r'(/visits|/visits/[\dA-Za-z\-]+)', request.url.path) and request.method == "GET":
@@ -117,4 +126,4 @@ def verify_identity(target_user_id: typing.Optional[str] = None):
     return lower_decorator
 
 
-__all__ = ['verify_role_middleware', 'encrypter_middleware', 'verify_identity']
+__all__ = ['verify_role_middleware', 'encrypter_middleware', 'verify_identity_for_seller_resources']

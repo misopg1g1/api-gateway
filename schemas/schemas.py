@@ -54,7 +54,9 @@ UPDATE_SELLER_EXAMPLE = {
 CREATE_VISIT_EXAMPLE = {
     "visit_date": "2023-06-07",
     "description": "Ejemplo de visita",
-    "order_id": "2b93fb04-ed28-11ed-a05b-0242ac120003"
+    "order_id": "2b93fb04-ed28-11ed-a05b-0242ac120003",
+    "customer_id": "2b93fb04-ed28-11ed-a05b-0242ac120003",
+    "img_base64_data": ""
 }
 
 UPDATE_VISIT_EXAMPLE = {
@@ -260,7 +262,9 @@ class CreateVisitSchema(pydantic.BaseModel):
     img_base64_data: typing.Optional[str] = pydantic.Field(default_factory=lambda: "")
     visit_date: typing.Optional[str] = pydantic.Field(default_factory=lambda: str(datetime.datetime.fromtimestamp(0)))
     description: typing.Optional[str] = pydantic.Field(default_factory=lambda: "")
-    order_id: str = pydantic.Field(...)
+    order_id: str = pydantic.Field(default_factory=lambda: "")
+    seller_id: str = pydantic.Field(default_factory=lambda: "")
+    customer_id: str = pydantic.Field(...)
 
     class Config:
         use_enum_values = True
