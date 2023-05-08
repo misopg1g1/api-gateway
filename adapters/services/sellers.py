@@ -49,11 +49,11 @@ class SellersAdapter(RequestsAdapter):
         return self._get(headers=headers)
 
     def create_visit(self, new_visit_schema: schemas.CreateVisitSchema, headers):
-        # self.base_url = config.AppConfigValues.CUSTOMERS_URL
-        # self.endpoint = f'customers/{new_visit_schema.customer_id}'
-        # formatted_header = dict(
-        #     filter(lambda kv: kv[0] not in ["content-type", "origin", "content-length"], headers.items()))
-        # self._get(headers=formatted_header)
+        self.base_url = config.AppConfigValues.CUSTOMERS_URL
+        self.endpoint = f'customers/{new_visit_schema.customer_id}'
+        formatted_header = dict(
+            filter(lambda kv: kv[0] not in ["content-type", "origin", "content-length"], headers.items()))
+        self._get(headers=formatted_header)
         self.base_url = config.AppConfigValues.SELLERS_URL
         self.endpoint = 'visits'
         self.json = new_visit_schema.dict()
