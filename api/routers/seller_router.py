@@ -112,9 +112,21 @@ def get_visits(request: Request, response: Response, skip: typing.Optional[int] 
     def method(*args, **kwargs):
         params = {"skip": skip, "take": take, "relations": True}
         seller_adapter = adapters.SellersAdapter()
+        customer_adapter = adapters.CustomersAdapter()
         seller_adapter.params = params
         headers = dict(request.headers.items())
         response.status_code, json_response = seller_adapter.get_visits(headers=headers)
+        if isinstance(json_response, list):
+            new_json_response = []
+            for visit in json_response:
+                try:
+                    if customer_id := visit.get("customer_id"):
+                        customer_status_code, customer_json_response = customer_adapter.get_customer(customer_id)
+                        new_json_response.append({**dict(filter(lambda kv: kv[0] != "customer_id",
+                                                                visit.items())), "customer": customer_json_response})
+                except Exception as e:
+                    new_json_response.append(visit)
+            return new_json_response
         return json_response
 
     return method(request=request, response=response)
@@ -143,10 +155,19 @@ def get_visit(visit_id: typing.Union[str, int], request: Request, response: Resp
     def method(*arg, **kwargs):
         params = {"relations": True}
         seller_adapter = adapters.SellersAdapter()
+        customer_adapter = adapters.CustomersAdapter()
         headers = dict(request.headers.items())
         seller_adapter.params = params
         response.status_code, json_response = seller_adapter.get_visit(visit_id, headers)
-        return json_response
+        try:
+            if customer_id := json_response.get("customer_id"):
+                customer_status_code, customer_json_response = customer_adapter.get_customer(customer_id)
+                return {**dict(filter(lambda kv: kv[0] != "customer_id",
+                                      json_response.items())), "customer": customer_json_response}
+            else:
+                return json_response
+        except Exception as e:
+            return json_response
 
     return method(request=request, response=response)
 

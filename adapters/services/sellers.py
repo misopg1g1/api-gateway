@@ -15,17 +15,20 @@ class SellersAdapter(RequestsAdapter):
 
     def get_sellers(self, headers):
         self.endpoint = f"sellers"
-        return self._get(headers=headers)
+        formatted_header = dict(
+            filter(lambda kv: kv[0] not in ["content-type", "origin", "content-length"], headers.items()))
+        return self._get(headers=formatted_header)
 
     def create_seller(self, new_seller_schema: schemas.CreateSellerSchema, headers):
         self.endpoint = 'sellers'
-
         self.json = new_seller_schema.dict()
         return self._post(headers=headers)
 
     def get_seller(self, seller_id, headers):
+        formatted_header = dict(
+            filter(lambda kv: kv[0] not in ["content-type", "origin", "content-length"], headers.items()))
         self.endpoint = f"sellers/{seller_id}"
-        return self._get(headers=headers)
+        return self._get(headers=formatted_header)
 
     def put_seller(self, seller_id, update_seller_schema, headers):
         self.endpoint = f"sellers/{seller_id}"

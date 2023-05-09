@@ -6,5 +6,5 @@ class AppConfigValues:
     AUTH_URL = os.getenv("AUTH_URL", "http://localhost:3001")
     PRODUCTS_URL = os.getenv("PRODUCTS_URL", "http://localhost:3002")
     CUSTOMERS_URL = os.getenv("CUSTOMERS_URL", "http://localhost:3002")
-    SELLERS_URL = os.getenv("SELLERS_URL", "http://localhost:3002")
+    SELLERS_URL = os.getenv("SELLERS_URL", "http://localhost:3005")
     INVENTORY_URL = os.getenv("INVENTORY_URL", "http://localhost:3002")
