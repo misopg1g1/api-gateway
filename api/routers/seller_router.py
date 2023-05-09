@@ -114,6 +114,7 @@ def get_visits(request: Request, response: Response, skip: typing.Optional[int] 
         seller_adapter = adapters.SellersAdapter()
         customer_adapter = adapters.CustomersAdapter()
         seller_adapter.params = params
+        customer_adapter.params = {"relations": True}
         headers = dict(request.headers.items())
         response.status_code, json_response = seller_adapter.get_visits(headers=headers)
         if isinstance(json_response, list):
@@ -158,9 +159,11 @@ def get_visit(visit_id: typing.Union[str, int], request: Request, response: Resp
         customer_adapter = adapters.CustomersAdapter()
         headers = dict(request.headers.items())
         seller_adapter.params = params
+        customer_adapter.params = params
         response.status_code, json_response = seller_adapter.get_visit(visit_id, headers)
         try:
             if customer_id := json_response.get("customer_id"):
+
                 customer_status_code, customer_json_response = customer_adapter.get_customer(customer_id)
                 return {**dict(filter(lambda kv: kv[0] != "customer_id",
                                       json_response.items())), "customer": customer_json_response}
