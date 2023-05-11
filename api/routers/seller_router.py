@@ -27,8 +27,8 @@ def get_sellers(request: Request, response: Response, skip: typing.Optional[int]
 def get_seller(seller_id: typing.Union[str, int], request: Request, response: Response,
                skip: typing.Optional[int] = None, take: typing.Optional[int] = None, relations: bool = True,
                token: str = Depends(common.token_schema)):
-    @common.verify_identity_for_seller_resources(seller_id)
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_seller_resources(seller_id)
     def method(*arg, **kwargs):
         headers = dict(request.headers.items())
         params = {"skip": skip, "take": take, "relations": relations}
@@ -48,8 +48,8 @@ def put_seller(seller_id: typing.Union[str, int], request: Request, response: Re
         El body puede ser parcial para cambiar solo un elemento del objeto y no todo el objeto.
     """
 
-    @common.verify_identity_for_seller_resources(seller_id)
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_seller_resources(seller_id)
     def method(*arg, **kwargs):
         seller_adapter = adapters.SellersAdapter()
         headers = dict(request.headers.items())
@@ -78,8 +78,8 @@ def put_seller(seller_id: typing.Union[str, int], request: Request, response: Re
 def get_visit_from_seller(seller_id: typing.Union[str, int], visit_id: typing.Union[str, int],
                           request: Request, response: Response,
                           token: str = Depends(common.token_schema)):
-    @common.verify_identity_for_seller_resources(seller_id)
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_seller_resources(seller_id)
     def method(*arg, **kwarg):
         seller_adapter = adapters.SellersAdapter()
         headers = dict(request.headers.items())
@@ -92,8 +92,8 @@ def get_visit_from_seller(seller_id: typing.Union[str, int], visit_id: typing.Un
 @seller_router.get("/sellers/{seller_id}/visits")
 def get_visits_from_seller(seller_id: typing.Union[str, int], request: Request, response: Response,
                            token: str = Depends(common.token_schema)):
-    @common.verify_identity_for_seller_resources(seller_id)
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_seller_resources(seller_id)
     def method(*arg, **kwarg):
         seller_adapter = adapters.SellersAdapter()
         headers = dict(request.headers.items())
@@ -107,8 +107,8 @@ def get_visits_from_seller(seller_id: typing.Union[str, int], request: Request, 
 def get_visits(request: Request, response: Response, skip: typing.Optional[int] = None,
                take: typing.Optional[int] = None,
                token: str = Depends(common.token_schema)):
-    @common.verify_identity_for_seller_resources()
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_seller_resources()
     def method(*args, **kwargs):
         params = {"skip": skip, "take": take, "relations": True}
         seller_adapter = adapters.SellersAdapter()
@@ -136,8 +136,8 @@ def get_visits(request: Request, response: Response, skip: typing.Optional[int] 
 @seller_router.post("/visits")
 def create_visit(new_visit_schema: schemas.CreateVisitSchema, request: Request, response: Response,
                  token: str = Depends(common.token_schema)):
-    @common.verify_identity_for_seller_resources()
     @common.verify_role_middleware(["SELLER"])
+    @common.verify_identity_for_seller_resources()
     def method(*arg, **kwarg):
         new_visit_schema.seller_id = kwarg.get("seller_id")
         seller_adapter = adapters.SellersAdapter()
@@ -151,8 +151,8 @@ def create_visit(new_visit_schema: schemas.CreateVisitSchema, request: Request, 
 @seller_router.get("/visits/{visit_id}")
 def get_visit(visit_id: typing.Union[str, int], request: Request, response: Response,
               token: str = Depends(common.token_schema)):
-    @common.verify_identity_for_seller_resources()
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_seller_resources()
     def method(*arg, **kwargs):
         params = {"relations": True}
         seller_adapter = adapters.SellersAdapter()
@@ -183,8 +183,8 @@ def put_visit(visit_id: typing.Union[str, int], request: Request, response: Resp
         El body puede ser parcial para cambiar solo un elemento del objeto y no todo el objeto.
     """
 
-    @common.verify_identity_for_seller_resources()
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_seller_resources()
     def method(*arg, **kwargs):
         seller_adapter = adapters.SellersAdapter()
         headers = dict(request.headers.items())

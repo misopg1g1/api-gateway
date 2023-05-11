@@ -288,9 +288,22 @@ class UpdateVisitSchema(pydantic.BaseModel):
         }
 
 
+class CreateItemSchema(pydantic.BaseModel):
+    product_id: str = pydantic.Field(..., example="3ea6ab64-20bf-41f5-95d7-5c6154d0baad")
+    quantity: int = pydantic.Field(..., example=3)
+
+
+class CreateOrderSchema(pydantic.BaseModel):
+    visit_id: str = pydantic.Field(..., example="3bccfe2a-8c86-46e3-a392-591e61701773")
+    delivery_date: str = pydantic.Field(..., example=str(datetime.datetime.now()))
+    discount: float = pydantic.Field(..., example=0)
+    grand_total: typing.Optional[float] = 0
+    items: typing.List[CreateItemSchema] = pydantic.Field(...)
+
+
 __all__ = ['LoginUserSchema', 'CreateUserSchema', 'UserSchema', 'LoginResponseSchema',
            'RolesSchema', 'CreateInventorySchema', 'UpdateInventorySchema', 'CreateProductSchema',
            'CreateCategorySchema', 'PatchCategorySchema', 'CreateCustomerSchema', 'CREATE_PRODUCT_EXAMPLE',
            'CREATE_CATEGORY_EXAMPLE', 'PATCH_CATEGORY_EXAMPLE', 'CreateSellerSchema', 'CREATE_SELLER_EXAMPLE',
            'CreateVisitSchema', 'CREATE_VISIT_EXAMPLE', 'UpdateVisitSchema', 'UPDATE_VISIT_EXAMPLE',
-           'UpdateSellerSchema', 'UPDATE_SELLER_EXAMPLE']
+           'UpdateSellerSchema', 'UPDATE_SELLER_EXAMPLE', 'CreateOrderSchema']
