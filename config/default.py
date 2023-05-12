@@ -8,4 +8,4 @@ class AppConfigValues:
     CUSTOMERS_URL = os.getenv("CUSTOMERS_URL", "http://localhost:3002")
     SELLERS_URL = os.getenv("SELLERS_URL", "http://localhost:3005")
     INVENTORY_URL = os.getenv("INVENTORY_URL", "http://localhost:3003")
-    ORDER_URL = os.getenv("ORDER_URL", "http://localhost:3006")
+    ORDERS_URL = os.getenv("ORDERS_URL", "http://localhost:3006")
