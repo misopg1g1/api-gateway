@@ -7,7 +7,7 @@ from adapters.request_http import RequestsAdapter
 
 class OrdersAdapter(RequestsAdapter):
     def __init__(self):
-        super(OrdersAdapter, self).__init__(config.AppConfigValues.ORDER_URL)
+        super(OrdersAdapter, self).__init__(config.AppConfigValues.ORDERS_URL)
 
     def rollback_order(self):
         for comp in self.compensation_methods:
