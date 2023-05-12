@@ -17,8 +17,27 @@ order_router = APIRouter(prefix="/orders", tags=["orders resource"])
 def get_orders(request: Request, response: Response, skip: typing.Optional[int] = None,
                take: typing.Optional[int] = None, relations: bool = True, token: str = Depends(common.token_schema)):
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_order_resources()
     def method(*args, **kwargs):
-        pass
+        headers = dict(request.headers.items())
+        orders_adapter = adapters.OrdersAdapter()
+        orders_adapter.params = {"skip": skip, "take": take, "relations": relations}
+        response.status_code, orders = orders_adapter.get_orders(headers=headers)
+        new_orders_list = []
+        if not isinstance(orders, typing.List):
+            return orders
+        for order in orders:
+            extended_order = {}
+            visit_id = order.get("visit_id")
+            if not visit_id:
+                extended_order = order
+            else:
+                visit = get_visit(visit_id, request, response, token)
+                seller = visit.get("seller")
+                customer = visit.get("customer")
+                extended_order = {**order, "seller": seller, "customer": customer}
+            new_orders_list.append(extended_order)
+        return new_orders_list
 
     return method(request=request, response=response)
 
@@ -27,8 +46,20 @@ def get_orders(request: Request, response: Response, skip: typing.Optional[int] 
 def get_order(order_id: typing.Union[str, int], request: Request, response: Response, relations: bool = True,
               token: str = Depends(common.token_schema)):
     @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
+    @common.verify_identity_for_order_resources()
     def method(*args, **kwargs):
-        pass
+        headers = dict(request.headers.items())
+        orders_adapter = adapters.OrdersAdapter()
+        orders_adapter.params = {"relations": relations}
+        response.status_code, order = orders_adapter.get_order(order_id, headers)
+        visit_id = order.get("visit_id")
+        if visit_id:
+            visit = get_visit(visit_id, request, response, token)
+            seller = visit.get("seller")
+            customer = visit.get("customer")
+            return {**order, "seller": seller, "customer": customer}
+        else:
+            return order
 
     return method(request=request, response=response)
 

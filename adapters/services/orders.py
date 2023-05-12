@@ -27,7 +27,7 @@ class OrdersAdapter(RequestsAdapter):
     def get_order(self, order_id: str, headers):
         formatted_header = dict(
             filter(lambda kv: kv[0] not in ["content-type", "origin", "content-length"], headers.items()))
-        self.endpoint = f"sellers/{order_id}"
+        self.endpoint = f"orders/{order_id}"
         return self._get(headers=formatted_header)
 
 
