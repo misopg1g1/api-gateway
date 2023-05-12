@@ -13,6 +13,21 @@ from fastapi import APIRouter, Depends, Response, Request
 order_router = APIRouter(prefix="/orders", tags=["orders resource"])
 
 
+def get_item_product(order, request, response, token):
+    extended_items = []
+    if (items := order.get("items")) and isinstance(items, list):
+        for item in items:
+            extended_item = item
+            if product_id := item.get("product_id"):
+                try:
+                    _, product = get_product(product_id, request, response, False, token)
+                    extended_item = {**item, "product_name": product.get("name")}
+                except:
+                    helpers.global_logger.getChild("OrderItem").error(traceback.format_exc())
+            extended_items.append(extended_item)
+    return extended_items
+
+
 @order_router.get("")
 def get_orders(request: Request, response: Response, skip: typing.Optional[int] = None,
                take: typing.Optional[int] = None, relations: bool = True, token: str = Depends(common.token_schema)):
@@ -27,11 +42,11 @@ def get_orders(request: Request, response: Response, skip: typing.Optional[int] 
         if not isinstance(orders, typing.List):
             return orders
         for order in orders:
-            extended_order = {}
             visit_id = order.get("visit_id")
             if not visit_id:
                 extended_order = order
             else:
+                order["items"] = get_item_product(order,request,response,token)
                 visit = get_visit(visit_id, request, response, token)
                 seller = visit.get("seller")
                 customer = visit.get("customer")
@@ -53,6 +68,7 @@ def get_order(order_id: typing.Union[str, int], request: Request, response: Resp
         orders_adapter.params = {"relations": relations}
         response.status_code, order = orders_adapter.get_order(order_id, headers)
         visit_id = order.get("visit_id")
+        order["items"] = get_item_product(order,request,response,token)
         if visit_id:
             visit = get_visit(visit_id, request, response, token)
             seller = visit.get("seller")
@@ -61,7 +77,8 @@ def get_order(order_id: typing.Union[str, int], request: Request, response: Resp
         else:
             return order
 
-    return method(request=request, response=response)
+
+return method(request=request, response=response)
 
 
 @order_router.post("")
