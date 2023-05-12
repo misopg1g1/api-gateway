@@ -63,8 +63,10 @@ class SellersAdapter(RequestsAdapter):
         return self._post(headers=headers)
 
     def get_visit(self, visit_id, headers):
+        formatted_header = dict(
+            filter(lambda kv: kv[0] not in ["content-type", "origin", "content-length"], headers.items()))
         self.endpoint = f"visits/{visit_id}"
-        return self._get(headers=headers)
+        return self._get(headers=formatted_header)
 
     def put_visit(self, visit_id, update_visit_schema, headers):
         self.endpoint = f"visits/{visit_id}"
