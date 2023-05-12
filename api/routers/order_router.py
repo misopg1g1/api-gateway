@@ -20,7 +20,7 @@ def get_item_product(order, request, response, token):
             extended_item = item
             if product_id := item.get("product_id"):
                 try:
-                    _, product = get_product(product_id, request, response, False, token)
+                    product = get_product(product_id, request, response, False, token)
                     extended_item = {**item, "product_name": product.get("name")}
                 except:
                     helpers.global_logger.getChild("OrderItem").error(traceback.format_exc())
