@@ -2,8 +2,9 @@ import common
 import schemas
 import adapters
 import helpers
+from .inventory_router import get_inventory, put_inventory
 
-from .seller_router import get_visit
+from .seller_router import get_visit, put_visit
 from .product_router import get_product
 
 import typing
@@ -86,12 +87,28 @@ def create_order(new_order_schema: schemas.CreateOrderSchema, request: Request,
     @common.verify_role_middleware(["SELLER"])
     def method(*args, **kwargs):
         headers = dict(request.headers.items())
-        visit = get_visit(new_order_schema.visit_id, request, response, token)
+        dict_stock_request = {}
         for item in new_order_schema.items:
             product = get_product(item.product_id, request, response, False, token)
+            inventory = get_inventory(item.product_id, request, response, token)
+            if (product_stock := inventory.get("stock")) >= 0:
+                if dict_stock_request.get(item.product_id):
+                    dict_stock_request[item.product_id] += item.quantity
+                else:
+                    dict_stock_request[item.product_id] = item.quantity
+                if dict_stock_request.get(item.product_id) > product_stock:
+                    raise common.error_handling.Conflict(
+                        common.ResponseMessagesValues.INSUFFICIENT_STOCK(product.get("name"), product_stock))
             new_order_schema.grand_total += item.quantity * product.get("price")
+
+        get_visit(new_order_schema.visit_id, request, response, token)
         order_adapter = adapters.OrdersAdapter()
         response.status_code, json_response = order_adapter.create_order(new_order_schema, headers)
+        if json_response and (order_id := json_response.get("id")):
+            put_visit(new_order_schema.visit_id, request, response, token, {"order_id": order_id})
+            for product_id, stock_to_remove in dict_stock_request.items():
+                stock_update = schemas.UpdateInventorySchema(stock=-stock_to_remove)
+                put_inventory(stock_update, product_id, request, response, token)
         return json_response
 
     return method(request=request, response=response)
