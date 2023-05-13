@@ -3,6 +3,7 @@ import schemas
 import common
 import adapters
 
+import typing
 from fastapi import APIRouter, Depends, Response, Request
 
 session_router = APIRouter(prefix="/session", tags=["Auth resource"])
@@ -11,10 +12,16 @@ session_router = APIRouter(prefix="/session", tags=["Auth resource"])
 @session_router.post("/create_user")
 def create_user(new_user_schema: schemas.CreateUserSchema, request: Request, response: Response,
                 token: str = Depends(common.token_schema)):
-    adapter = adapters.AuthAdapter()
+    user_adapter = adapters.AuthAdapter()
     headers = dict(request.headers.items())
-    response.status_code, json_response = adapter.create_user(new_user_schema, headers)
-    return json_response
+    response.status_code, json_response = user_adapter.create_user(new_user_schema, headers)
+    if new_user_schema.role == enums.RoleEnum.SELLER.value:
+        seller_adapter = adapters.SellersAdapter()
+        if json_response and (user_id := json_response.get("id", None)):
+            new_seller_schema = schemas.CreateSellerSchema(id=user_id)
+            seller_adapter.compensation_methods.append(("delete_user", user_id, headers))
+            seller_adapter.create_seller(new_seller_schema, headers)
+    return {"msg": f'El usuario {json_response.get("user", new_user_schema.user)} fue creado exitosamente.'}
 
 
 @session_router.get("/refresh_token")

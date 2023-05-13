@@ -13,18 +13,19 @@ customer_router = APIRouter(prefix="/customers", tags=["customers resource"])
 @customer_router.get("")
 def get_customers(request: Request, response: Response, skip: typing.Optional[int] = None,
                   take: typing.Optional[int] = None, relations: bool = True, token: str = Depends(common.token_schema)):
-    @common.verify_role_middleware(["ADMIN", "SELLER", "TRANSPORTER", "MARKETING", "CLIENT"])
+    @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
     def method(*args, **kwargs):
         params = {"skip": skip, "take": take, "relations": relations}
         customers_adapter = adapters.CustomersAdapter()
         sellers_adapter = adapters.SellersAdapter()
         customers_adapter.params = params
+        headers = dict(request.headers.items())
         response.status_code, customers_json_response = customers_adapter.get_customers()
         if isinstance(customers_json_response, typing.List):
             for i, c in enumerate(customers_json_response):
                 if seller_id := c.get("seller_id"):
                     try:
-                        _, seller = sellers_adapter.get_seller(seller_id)
+                        _, seller = sellers_adapter.get_seller(seller_id, headers)
                         first_name = seller.get("first_name")
                         last_name = seller.get("last_name")
                         if isinstance(seller, dict) and (isinstance(last_name, str) or isinstance(first_name, str)):
@@ -40,16 +41,17 @@ def get_customers(request: Request, response: Response, skip: typing.Optional[in
 @customer_router.get("/{customer_id}")
 def get_customer(customer_id: typing.Union[str, int], request: Request, response: Response, relations: bool = True,
                  token: str = Depends(common.token_schema)):
-    @common.verify_role_middleware(["ADMIN", "SELLER", "TRANSPORTER", "MARKETING", "CLIENT"])
+    @common.verify_role_middleware(["ADMIN", "SELLER", "MARKETING"])
     def method(*args, **kwargs):
         params = {"relations": relations}
         customers_adapter = adapters.CustomersAdapter()
         sellers_adapter = adapters.SellersAdapter()
         customers_adapter.params = params
+        headers = dict(request.headers.items())
         response.status_code, customers_json_response = customers_adapter.get_customer(customer_id)
         if seller_id := customers_json_response.get("seller_id"):
             try:
-                _, seller = sellers_adapter.get_seller(seller_id)
+                _, seller = sellers_adapter.get_seller(seller_id, headers)
                 first_name = seller.get("first_name")
                 last_name = seller.get("last_name")
                 if isinstance(seller, dict) and (isinstance(last_name, str) or isinstance(first_name, str)):
@@ -69,7 +71,8 @@ def create_customer(new_customer_schema: schemas.CreateCustomerSchema, request: 
     def method(*args, **kwargs):
         customers_adapter = adapters.CustomersAdapter()
         sellers_adapter = adapters.SellersAdapter()
-        response.status_code, seller_json_response = sellers_adapter.get_seller(new_customer_schema.seller_id)
+        headers = dict(request.headers.items())
+        response.status_code, seller_json_response = sellers_adapter.get_seller(new_customer_schema.seller_id, headers)
         if int(str(response.status_code)[0]) / 2 != 1:
             return seller_json_response
         response.status_code, customer_json_response = customers_adapter.create_customer(new_customer_schema)

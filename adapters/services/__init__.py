@@ -3,3 +3,4 @@ from .products import *
 from .inventory import *
 from .customers import *
 from .sellers import *
+from .orders import *

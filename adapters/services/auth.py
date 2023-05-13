@@ -30,7 +30,9 @@ class AuthAdapter(RequestsAdapter):
 
     def verify_token(self, headers):
         self.endpoint = 'session/verify_token'
-        return self._get(headers=headers)
+        formatted_header = dict(
+            filter(lambda kv: kv[0] not in ["content-type", "origin", "content-length"], headers.items()))
+        return self._get(headers=formatted_header)
 
     def verify_roles(self, roles_schema: schemas.RolesSchema, headers):
         self.endpoint = 'session/verify_roles'
