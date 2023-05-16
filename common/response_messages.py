@@ -21,4 +21,5 @@ class ResponseMessagesValues:
     NO_MATCHING_HATCH = "No se proporcionó el hash o el mismo no coincide con el cuerpo del mensaje"
     GENERAL_REQUESTS_FAILURE_MESSAGE = "El servicio no se encuentra disponible por el momento. Porfavor intente mas tarde."
     ONLY_SELLERS_MSG = "Solo un usuario con el rol de vendedor puede crear una visita."
-
+    INSUFFICIENT_STOCK = lambda product, stock: \
+        f"No hay suficientes existencias del producto {product}. Actualmente solo existen {stock} en bodega"
