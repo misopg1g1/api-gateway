@@ -9,3 +9,7 @@ class AppConfigValues:
     SELLERS_URL = os.getenv("SELLERS_URL", "http://localhost:3005")
     INVENTORY_URL = os.getenv("INVENTORY_URL", "http://localhost:3003")
     ORDERS_URL = os.getenv("ORDERS_URL", "http://localhost:3006")
+    RABBIT_HOST = os.getenv("RABBIT_HOST", "localhost")
+    RABBIT_PORT = os.getenv("RABBIT_PORT", "5672")
+    RABBIT_USER = os.getenv("RABBIT_USER", "user")
+    RABBIT_PASSWORD = os.getenv("RABBIT_PASSWORD", "secret")

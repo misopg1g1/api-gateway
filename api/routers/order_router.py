@@ -1,4 +1,5 @@
 import common
+import publishers
 import schemas
 import adapters
 import helpers
@@ -109,6 +110,13 @@ def create_order(new_order_schema: schemas.CreateOrderSchema, request: Request,
             for product_id, stock_to_remove in dict_stock_request.items():
                 stock_update = schemas.UpdateInventorySchema(stock=-stock_to_remove)
                 put_inventory(stock_update, product_id, request, response, token)
+            if (newly_created_order := get_order(order_id, request, response, True, token)) and \
+                    isinstance(newly_created_order, dict) and newly_created_order.get("id"):
+                try:
+                    publishers.new_order_email_publisher.publish_user_to_verify(newly_created_order)
+                except:
+                    helpers.global_logger.getChild("create_order").error("No se pudo publicar "
+                                                                         "el mensaje en la cola de mensajeria")
         return json_response
 
     return method(request=request, response=response)
