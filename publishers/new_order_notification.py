@@ -20,8 +20,6 @@ class NewOrderEmailProducer(config.KombuProducer):
         self._publish(dump_data)
 
 
-new_order_email_publisher = NewOrderEmailProducer(['new_order_email'], 'new_order_email',
-                                                  kombu.Exchange(''),
-                                                  config.kombu_client.connection)
+new_order_email_publisher = lambda: NewOrderEmailProducer(['new_order_email'], 'new_order_email', kombu.Exchange(''))
 
 __all__ = ['new_order_email_publisher']

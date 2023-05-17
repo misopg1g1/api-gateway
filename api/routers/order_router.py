@@ -113,7 +113,9 @@ def create_order(new_order_schema: schemas.CreateOrderSchema, request: Request,
             if (newly_created_order := get_order(order_id, request, response, True, token)) and \
                     isinstance(newly_created_order, dict) and newly_created_order.get("id"):
                 try:
-                    publishers.new_order_email_publisher.publish_user_to_verify(newly_created_order)
+                    publisher = publishers.new_order_email_publisher()
+                    publisher.publish_user_to_verify(newly_created_order)
+                    publisher.connection.close()
                 except:
                     helpers.global_logger.getChild("create_order").error("No se pudo publicar "
                                                                          "el mensaje en la cola de mensajeria")

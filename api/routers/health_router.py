@@ -13,8 +13,7 @@ def health():
 
 @health_router.post("/kombu")
 def health(data=Body()):
-    try:
-        publishers.new_order_email_publisher.publish_user_to_verify(data)
-    except:
-        print()
+    publisher = publishers.new_order_email_publisher()
+    publisher.publish_user_to_verify(data)
+    publisher.connection.close()
     return {"msg": "mensaje enviado a la cola!!"}
