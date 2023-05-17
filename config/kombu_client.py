@@ -14,5 +14,4 @@ class KombuClient:
         self.__user = AppConfigValues.RABBIT_USER
         self.__password = AppConfigValues.RABBIT_PASSWORD
         self.logger = helpers.global_logger.getChild('rabbitmq_client')
-        self.connection = kombu.Connection(host_name=self.__host, userid=self.__user, password=self.__password,
-                                           port=self.__port, virtual_host='/')
+        self.connection = kombu.Connection(f'amqp://{self.__user}:{self.__password}@{self.__host}:{self.__port}//')
