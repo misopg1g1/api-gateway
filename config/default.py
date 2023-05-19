@@ -13,3 +13,6 @@ class AppConfigValues:
     RABBIT_PORT = os.getenv("RABBIT_PORT", "5672")
     RABBIT_USER = os.getenv("RABBIT_USER", "user")
     RABBIT_PASSWORD = os.getenv("RABBIT_PASSWORD", "secret")
+    REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
+    REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
+    REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", "secret")
