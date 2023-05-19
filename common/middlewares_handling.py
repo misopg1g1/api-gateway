@@ -48,7 +48,7 @@ def verify_role_middleware(roles: typing.List[str]):
             v_status_code, v_json_resp = auth_adapter.verify_roles(
                 schemas.RolesSchema(**{"roles": roles}),
                 headers)
-            if v_status_code != 204:
+            if int(str(v_status_code)[0]) / 2 != 1:
                 response.status_code = v_status_code
                 return v_json_resp
             if (resp := func(*args, **kwargs)) is not None:
@@ -67,7 +67,7 @@ def verify_identity_for_seller_resources(target_user_id: typing.Optional[str] = 
             headers = dict(request.headers.items())
             auth_adapter = adapters.AuthAdapter()
             v_status_code, v_json_resp = auth_adapter.verify_token(headers)
-            if v_status_code != 200:
+            if int(str(v_status_code)[0]) / 2 != 1:
                 response.status_code = v_status_code
                 return v_json_resp
             if target_user_id:
@@ -117,7 +117,7 @@ def verify_identity_for_order_resources(target_user_id: typing.Optional[str] = N
             headers = dict(request.headers.items())
             auth_adapter = adapters.AuthAdapter()
             v_status_code, v_json_resp = auth_adapter.verify_token(headers)
-            if v_status_code != 200:
+            if int(str(v_status_code)[0]) / 2 != 1:
                 response.status_code = v_status_code
                 return v_json_resp
             if target_user_id:
