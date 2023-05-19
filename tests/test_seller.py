@@ -6,6 +6,7 @@ import pytest
 import helpers
 import schemas
 
+
 # class TestClassCreateSeller:
 #     @pytest.fixture
 #     def mock_response(self, monkeypatch):
@@ -15,7 +16,7 @@ import schemas
 
 #         def mock_method(*args, **kwargs):
 #             return mockup_resp
-        
+
 #         monkeypatch.setattr(requests, 'request', mock_method)
 #         return mock_method
 #     def test_success(self, mock_response):
@@ -52,7 +53,7 @@ class TestClassGetSellers:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp        
+        return mockup_resp
 
     @pytest.fixture
     def mock_response_unauthorized(self, monkeypatch):
@@ -64,8 +65,8 @@ class TestClassGetSellers:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp    
-    
+        return mockup_resp
+
     def test_success(self, mock_response):
         client = TestClient(api.create_app())
         headers = {
@@ -84,14 +85,15 @@ class TestClassGetSellers:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/sellers", headers=headers)
-        assert resp.status_code == 401    
+        assert resp.status_code == 401
+
 
 class TestClassGetSeller:
     @pytest.fixture
     def mock_response(self, monkeypatch):
         mockup_resp = Mock()
         mockup_resp.status_code = 204
-        mockup_resp.json.return_value = {'key': 'value'}
+        mockup_resp.json.return_value = {'key': 'value', 'role': 'ADMIN'}
 
         def mock_method(*args, **kwargs):
             return mockup_resp
@@ -121,7 +123,6 @@ class TestClassGetSeller:
         resp = client.get("/sellers/1", headers=headers)
         assert resp.status_code == 204
 
-
     def test_unauthorized(self, mock_response_unauthorized):
         client = TestClient(api.create_app())
         headers = {
@@ -130,7 +131,7 @@ class TestClassGetSeller:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/sellers/1", headers=headers)
-        assert resp.status_code == 401        
+        assert resp.status_code == 401
 
 
 class TestClassGetVisitsFromSeller:
@@ -138,13 +139,13 @@ class TestClassGetVisitsFromSeller:
     def mock_response(self, monkeypatch):
         mockup_resp = Mock()
         mockup_resp.status_code = 204
-        mockup_resp.json.return_value = {'key': 'value'}
+        mockup_resp.json.return_value = {'key': 'value', 'role': 'ADMIN'}
 
         def mock_method(*args, **kwargs):
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp        
+        return mockup_resp
 
     @pytest.fixture
     def mock_response_unauthorized(self, monkeypatch):
@@ -156,8 +157,8 @@ class TestClassGetVisitsFromSeller:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp    
-    
+        return mockup_resp
+
     def test_success(self, mock_response):
         client = TestClient(api.create_app())
         headers = {
@@ -176,14 +177,15 @@ class TestClassGetVisitsFromSeller:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/sellers/1/visits", headers=headers)
-        assert resp.status_code == 401    
+        assert resp.status_code == 401
+
 
 class TestClassGetVisitFromSeller:
     @pytest.fixture
     def mock_response(self, monkeypatch):
         mockup_resp = Mock()
         mockup_resp.status_code = 201
-        mockup_resp.json.return_value = {'key': 'value'}
+        mockup_resp.json.return_value = {'key': 'value', 'role': 'ADMIN'}
 
         def mock_method(*args, **kwargs):
             return mockup_resp
@@ -213,7 +215,6 @@ class TestClassGetVisitFromSeller:
         resp = client.get("/sellers/1/visits/1", headers=headers)
         assert resp.status_code == 201
 
-
     def test_unauthorized(self, mock_response_unauthorized):
         client = TestClient(api.create_app())
         headers = {
@@ -222,7 +223,8 @@ class TestClassGetVisitFromSeller:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/sellers/1/visits/1", headers=headers)
-        assert resp.status_code == 401           
+        assert resp.status_code == 401
+
 
 class TestClassGetVisits:
     @pytest.fixture
@@ -235,7 +237,7 @@ class TestClassGetVisits:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp        
+        return mockup_resp
 
     @pytest.fixture
     def mock_response_unauthorized(self, monkeypatch):
@@ -247,8 +249,8 @@ class TestClassGetVisits:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp    
-    
+        return mockup_resp
+
     def test_success(self, mock_response):
         client = TestClient(api.create_app())
         headers = {
@@ -267,7 +269,8 @@ class TestClassGetVisits:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/visits", headers=headers)
-        assert resp.status_code == 401    
+        assert resp.status_code == 401
+
 
 class TestClassGetVisit:
     @pytest.fixture
@@ -304,7 +307,6 @@ class TestClassGetVisit:
         resp = client.get("/visits/1", headers=headers)
         assert resp.status_code == 204
 
-
     def test_unauthorized(self, mock_response_unauthorized):
         client = TestClient(api.create_app())
         headers = {
@@ -313,7 +315,7 @@ class TestClassGetVisit:
             "Authorization": f"Bearer 1"
         }
         resp = client.get("/visits/1", headers=headers)
-        assert resp.status_code == 401                   
+        assert resp.status_code == 401
 
 
 class TestClassCreateVisit:
@@ -325,10 +327,10 @@ class TestClassCreateVisit:
 
         def mock_method(*args, **kwargs):
             return mockup_resp
-        
+
         monkeypatch.setattr(requests, 'request', mock_method)
         return mockup_resp
-    
+
     @pytest.fixture
     def mock_response_unauthorized(self, monkeypatch):
         mockup_resp = Mock()
@@ -339,7 +341,7 @@ class TestClassCreateVisit:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp     
+        return mockup_resp
 
     def test_success(self, mock_response):
         client = TestClient(api.create_app())
@@ -358,12 +360,13 @@ class TestClassCreateVisit:
         headers = {
             "accept": "aplication/json",
             "Content": "application/json",
-            "Authorization": f"Bearer 1"            
+            "Authorization": f"Bearer 1"
         }
         visit_to_add = schemas.CREATE_VISIT_EXAMPLE
         visit_to_add["hash"] = helpers.get_hash(visit_to_add)
         resp = client.post("/visits", json=visit_to_add, headers=headers)
-        assert resp.status_code == 403     
+        assert resp.status_code == 403
+
 
 class TestClassUpdateVisit:
     @pytest.fixture
@@ -376,7 +379,7 @@ class TestClassUpdateVisit:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp        
+        return mockup_resp
 
     @pytest.fixture
     def mock_response_unauthorized(self, monkeypatch):
@@ -388,8 +391,8 @@ class TestClassUpdateVisit:
             return mockup_resp
 
         monkeypatch.setattr(requests, 'request', mock_method)
-        return mockup_resp    
-    
+        return mockup_resp
+
     def test_success(self, mock_response):
         client = TestClient(api.create_app())
         headers = {
@@ -407,7 +410,7 @@ class TestClassUpdateVisit:
         headers = {
             "accept": "aplication/json",
             "Content": "application/json",
-            "Authorization": f"Bearer 1"            
+            "Authorization": f"Bearer 1"
         }
         visit_to_update = schemas.UPDATE_VISIT_EXAMPLE
         visit_to_update["hash"] = helpers.get_hash(visit_to_update)
