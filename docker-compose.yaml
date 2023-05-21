@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=your-rabbitmq-username
+      - RABBITMQ_DEFAULT_PASS=your-rabbitmq-password
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3002:3002
+    environment:
+      - AUTH_URL=http://microservice-url
+      - CUSTOMERS_URL=http://microservice-url
+      - ENCRYPTION_KEY_SECRET=encryption-key
+      - INVENTORY_URL=http://microservice-url
+      - ORDERS_URL=http://microservice-url
+      - PRODUCTS_URL=http://microservice-url
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PASSWORD=your-rabbitmq-password
+      - RABBIT_PORT=5672
+      - RABBIT_USER=your-rabbitmq-username
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=your-redis-password
+      - REDIS_PORT=6379
+      - SELLERS_URL=http://microservice-url
+    depends_on:
+      - rabbitmq
+      - redis
+
